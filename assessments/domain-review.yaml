@@ -1,0 +1,244 @@
+schema_version: 1
+kind: question_bank
+id: ats072-domain-review
+course_id: ATS072
+exam_code: CBA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: domain
+  id: domain-review
+  title: Customizing Backstage
+placement:
+  position: after
+  reading: sections/section-040/module-01/course-02-summary.md
+questions:
+- id: ats072-domain-review-q01
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Distinguish browser features from server-side plugin responsibilities.
+  source_readings:
+  - sections/section-010/module-01/course-01-frontend-plugins-backend-plugins-and-extension-systems.md
+  prompt: Which operation belongs behind a backend boundary?
+  options:
+  - id: a
+    text: Choosing a card's visual spacing.
+    explanation: That is frontend presentation.
+  - id: b
+    text: Rendering a loading spinner.
+    explanation: Rendering belongs to the browser.
+  - id: c
+    text: Calling an external API with a privileged integration credential.
+    explanation: The server should mediate privileged access.
+  correct_option: c
+  explanation: The server should mediate privileged access.
+- id: ats072-domain-review-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain backend modules, services and extension points.
+  source_readings:
+  - sections/section-010/module-01/course-01-frontend-plugins-backend-plugins-and-extension-systems.md
+  prompt: How does a backend module normally extend a plugin?
+  options:
+  - id: a
+    text: By changing every unrelated plugin's database tables.
+    explanation: That is not its extension scope.
+  - id: b
+    text: Through that plugin's supported extension points in the same backend instance.
+    explanation: The extension system establishes a defined relationship.
+  - id: c
+    text: By directly importing arbitrary private plugin internals.
+    explanation: Private imports bypass supported contracts.
+  correct_option: b
+  explanation: The extension system establishes a defined relationship.
+- id: ats072-domain-review-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Identify architecture-version compatibility when installing features.
+  source_readings:
+  - sections/section-010/module-01/course-01-frontend-plugins-backend-plugins-and-extension-systems.md
+  prompt: Why check installation instructions against the application architecture?
+  options:
+  - id: a
+    text: Legacy and newer extension systems have different wiring contracts.
+    explanation: Compatible registration matters alongside package installation.
+  - id: b
+    text: Every plugin automatically works in all architectures.
+    explanation: APIs and registration can differ.
+  - id: c
+    text: Architecture only changes the homepage title.
+    explanation: It changes how features are composed.
+  correct_option: a
+  explanation: Compatible registration matters alongside package installation.
+- id: ats072-domain-review-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Choose between configuration and supported extension mechanisms.
+  source_readings:
+  - sections/section-020/module-01/course-01-configuration-overrides-and-maintainable-plugin-customization.md
+  prompt: A plugin supports a configuration option for the required display behavior. What is the first
+    approach to assess?
+  options:
+  - id: a
+    text: Patch private source files immediately.
+    explanation: Private modifications create extra compatibility work.
+  - id: b
+    text: Copy a production credential into the card.
+    explanation: That is unrelated and unsafe.
+  - id: c
+    text: Use its supported configuration contract.
+    explanation: It avoids unnecessary implementation coupling.
+  correct_option: c
+  explanation: It avoids unnecessary implementation coupling.
+- id: ats072-domain-review-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain compatibility and ownership risks of private modifications.
+  source_readings:
+  - sections/section-020/module-01/course-01-configuration-overrides-and-maintainable-plugin-customization.md
+  prompt: Why avoid importing a plugin's private internals?
+  options:
+  - id: a
+    text: TypeScript automatically stabilizes every internal API forever.
+    explanation: Types do not promise API lifecycle stability.
+  - id: b
+    text: They may change without a supported compatibility guarantee.
+    explanation: An extension should use stable public contracts.
+  - id: c
+    text: Private files are always encrypted.
+    explanation: That is not the issue.
+  correct_option: b
+  explanation: An extension should use stable public contracts.
+- id: ats072-domain-review-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Reason about permission and response contracts when extending a feature.
+  source_readings:
+  - sections/section-020/module-01/course-01-configuration-overrides-and-maintainable-plugin-customization.md
+  prompt: A custom frontend hides a destructive action. What must still exist?
+  options:
+  - id: a
+    text: Server-side authorization for that action.
+    explanation: Independent clients can call the route.
+  - id: b
+    text: A larger icon next to the hidden button.
+    explanation: Icons do not enforce permissions.
+  - id: c
+    text: A catalog annotation saying permission is granted.
+    explanation: Metadata does not enforce authority.
+  correct_option: a
+  explanation: Independent clients can call the route.
+- id: ats072-domain-review-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain component properties, state and side-effect boundaries.
+  source_readings:
+  - sections/section-030/module-01/course-01-react-composition-state-and-asynchronous-catalog-features.md
+  prompt: What should a React component primarily derive during rendering?
+  options:
+  - id: a
+    text: A new production administrator token.
+    explanation: That is not browser rendering work.
+  - id: b
+    text: A database migration for every refresh.
+    explanation: Durable backend operations do not belong in render.
+  - id: c
+    text: Interface output from its current properties and state.
+    explanation: Rendering should describe the current view.
+  correct_option: c
+  explanation: Rendering should describe the current view.
+- id: ats072-domain-review-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Distinguish loading, missing data, success and failure in a portal feature.
+  source_readings:
+  - sections/section-030/module-01/course-01-react-composition-state-and-asynchronous-catalog-features.md
+  prompt: Why distinguish an absent annotation from a failed request?
+  options:
+  - id: a
+    text: React prevents absent values from occurring.
+    explanation: Catalog metadata can omit optional fields.
+  - id: b
+    text: They imply different user guidance and integration behavior.
+    explanation: Missing configuration is not a network failure.
+  - id: c
+    text: Both prove every service is down.
+    explanation: Neither establishes that universal claim.
+  correct_option: b
+  explanation: Missing configuration is not a network failure.
+- id: ats072-domain-review-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Reason about stable identity, accessibility and frontend API use.
+  source_readings:
+  - sections/section-030/module-01/course-01-react-composition-state-and-asynchronous-catalog-features.md
+  prompt: Which boundary should enforce a sensitive action's permission?
+  options:
+  - id: a
+    text: The backend route handling the action.
+    explanation: Browser controls can be bypassed.
+  - id: b
+    text: Only the visual button component.
+    explanation: Visibility is not authority.
+  - id: c
+    text: Only a CSS class name.
+    explanation: Styles cannot enforce server access.
+  correct_option: a
+  explanation: Browser controls can be bypassed.
+- id: ats072-domain-review-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain component and theme responsibilities in a Backstage interface.
+  source_readings:
+  - sections/section-040/module-01/course-01-compatible-ui-components-theme-context-and-accessible-states.md
+  prompt: What should be checked before copying a Material UI import?
+  options:
+  - id: a
+    text: Only the entity's deployment region.
+    explanation: That does not choose the UI library version.
+  - id: b
+    text: Whether the server token has a longer lifetime.
+    explanation: Tokens are unrelated to component imports.
+  - id: c
+    text: The application's installed major version and supported package contract.
+    explanation: Different generations use different imports and styling behavior.
+  correct_option: c
+  explanation: Different generations use different imports and styling behavior.
+- id: ats072-domain-review-q11
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Identify Material UI version and import compatibility.
+  source_readings:
+  - sections/section-040/module-01/course-01-compatible-ui-components-theme-context-and-accessible-states.md
+  prompt: What does theme context primarily provide?
+  options:
+  - id: a
+    text: Automatic catalog source discovery.
+    explanation: Themes do not ingest entities.
+  - id: b
+    text: Shared visual values and component styling conventions.
+    explanation: It supports consistent presentation.
+  - id: c
+    text: Backend authorization for sensitive actions.
+    explanation: That remains a server concern.
+  correct_option: b
+  explanation: It supports consistent presentation.
+- id: ats072-domain-review-q12
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Reason about layout, semantic controls and visible status states.
+  source_readings:
+  - sections/section-040/module-01/course-01-compatible-ui-components-theme-context-and-accessible-states.md
+  prompt: Why avoid communicating an error only through color?
+  options:
+  - id: a
+    text: Some users cannot perceive that distinction reliably.
+    explanation: Text and semantic status improve accessibility.
+  - id: b
+    text: Colors always contain integration credentials.
+    explanation: That is not the concern.
+  - id: c
+    text: A red color automatically retries a failed API call.
+    explanation: Presentation does not perform recovery.
+  correct_option: a
+  explanation: Text and semantic status improve accessibility.
