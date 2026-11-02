@@ -1,0 +1,99 @@
+version: 1
+approval: CBA requested 2026-10-11; established reading-only scope
+course:
+  id: ATS072
+  certification:
+    name: Certified Backstage Associate
+    code: CBA
+    provider: CNCF / Linux Foundation
+    domain: Customizing Backstage
+    weight: 32
+    competencies:
+    - Understand frontend versus backend plugins
+    - Customizing Backstage plugins
+    - Make changes to React code in Backstage App
+    - Using Material UI components
+defaults:
+  playground: false
+  module_lab: false
+  capstone: false
+  section_quiz: false
+  final_quiz: true
+assessment_format: YAML question banks v1, registered in assessments/index.yaml
+sections:
+- id: section-010
+  title: Understand frontend versus backend plugins
+  curriculum_item: Understand frontend versus backend plugins
+  capstone: false
+  section_quiz: false
+  modules:
+  - id: module-01
+    title: Frontend Plugins, Backend Plugins And Extension Systems
+    objectives:
+    - Distinguish browser features from server-side plugin responsibilities.
+    - Explain backend modules, services and extension points.
+    - Identify architecture-version compatibility when installing features.
+    outline:
+    - Frontend Plugins, Backend Plugins And Extension Systems
+    playground: false
+    module_lab: false
+    sources:
+    - reading: sections/section-010/module-01/course-01-frontend-plugins-backend-plugins-and-extension-systems.md
+      adapted_from: null
+- id: section-020
+  title: Customizing Backstage plugins
+  curriculum_item: Customizing Backstage plugins
+  capstone: false
+  section_quiz: false
+  modules:
+  - id: module-01
+    title: Configuration, Overrides And Maintainable Plugin Customization
+    objectives:
+    - Choose between configuration and supported extension mechanisms.
+    - Explain compatibility and ownership risks of private modifications.
+    - Reason about permission and response contracts when extending a feature.
+    outline:
+    - Configuration, Overrides And Maintainable Plugin Customization
+    playground: false
+    module_lab: false
+    sources:
+    - reading: sections/section-020/module-01/course-01-configuration-overrides-and-maintainable-plugin-customization.md
+      adapted_from: null
+- id: section-030
+  title: Make changes to React code in Backstage App
+  curriculum_item: Make changes to React code in Backstage App
+  capstone: false
+  section_quiz: false
+  modules:
+  - id: module-01
+    title: React Composition, State And Asynchronous Catalog Features
+    objectives:
+    - Explain component properties, state and side-effect boundaries.
+    - Distinguish loading, missing data, success and failure in a portal feature.
+    - Reason about stable identity, accessibility and frontend API use.
+    outline:
+    - React Composition, State And Asynchronous Catalog Features
+    playground: false
+    module_lab: false
+    sources:
+    - reading: sections/section-030/module-01/course-01-react-composition-state-and-asynchronous-catalog-features.md
+      adapted_from: null
+- id: section-040
+  title: Using Material UI components
+  curriculum_item: Using Material UI components
+  capstone: false
+  section_quiz: false
+  modules:
+  - id: module-01
+    title: Compatible UI Components, Theme Context And Accessible States
+    objectives:
+    - Explain component and theme responsibilities in a Backstage interface.
+    - Identify Material UI version and import compatibility.
+    - Reason about layout, semantic controls and visible status states.
+    outline:
+    - Compatible UI Components, Theme Context And Accessible States
+    playground: false
+    module_lab: false
+    sources:
+    - reading: sections/section-040/module-01/course-01-compatible-ui-components-theme-context-and-accessible-states.md
+      adapted_from: null
