@@ -35,7 +35,7 @@ modules:
 - id: module-010
   title: Understand frontend versus backend plugins
   description: Developed reading and reasoning for Understand frontend versus backend plugins.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: Understand frontend versus backend plugins
@@ -52,7 +52,7 @@ modules:
 - id: module-020
   title: Customizing Backstage plugins
   description: Developed reading and reasoning for Customizing Backstage plugins.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: Customizing Backstage plugins
@@ -69,7 +69,7 @@ modules:
 - id: module-030
   title: Make changes to React code in Backstage App
   description: Developed reading and reasoning for Make changes to React code in Backstage App.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: Make changes to React code in Backstage App
@@ -86,7 +86,7 @@ modules:
 - id: module-040
   title: Using Material UI components
   description: Developed reading and reasoning for Using Material UI components.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: Using Material UI components
