@@ -1,0 +1,66 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Material UI Components In Backstage (LAB). Built untested: only astrona validate, bash -n and YAML parsing were run.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-072-lab-040-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: "qemu"
+  qemu:
+    - image:
+        type: "oci"
+        source: "ghcr.io/astrona-io/ubuntu-qcow2-image:24.04-lfcs-{ARCH}"
+      cpus: 2
+      memoryMB: 2048
+      diskSizeGB: 15
+      display: false
+
+bootstrap:
+  init:
+    - name: "seed-backstage-app"
+      description: "Writes the scout-status Backstage-style project to /home/candidate/backstage-app"
+      type: "folder"
+      source: "bootstrap/"
+
+testing:
+  init:
+    - name: apply-solution
+      description: "Apply the reference solution"
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: card-uses-v4-imports
+      description: "ScoutStatusCard imports Typography, Button and makeStyles from @material-ui/core"
+      type: file
+      source: validation/validate-card-uses-v4-imports.sh
+      hint: "Change the Typography, Button and makeStyles imports in ScoutStatusCard.tsx to @material-ui/core/Typography, @material-ui/core/Button and @material-ui/core/styles."
+    - name: list-uses-v4-grid
+      description: "ScoutList uses the v4 Grid with container and item and no sx prop"
+      type: file
+      source: validation/validate-list-uses-v4-grid.sh
+      hint: "Import Grid from @material-ui/core/Grid, keep Grid container and Grid item xs={12}, and delete the Box that uses the sx prop."
+    - name: no-mui-v5-in-plugin
+      description: "No @mui import and no @mui dependency in the plugin"
+      type: file
+      source: validation/validate-no-mui-v5-in-plugin.sh
+      hint: "Search with: grep -rn \"@mui\" plugins/scout-status. Remove every match."
+    - name: imports-match-dependencies
+      description: "Every Material UI package imported is declared in the plugin package.json and is v4"
+      type: file
+      source: validation/validate-imports-match-dependencies.sh
+      hint: "Keep @material-ui/core and @backstage/core-components in package.json and import only from packages declared there."
+    - name: card-uses-infocard
+      description: "ScoutStatusCard renders an InfoCard from @backstage/core-components and styles with theme.spacing"
+      type: file
+      source: validation/validate-card-uses-infocard.sh
+      hint: "Replace Card, CardHeader and CardContent with <InfoCard title={scout.name}> and keep the makeStyles callback that calls theme.spacing."
+
+teardown:
+  keepCluster: false

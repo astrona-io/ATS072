@@ -1,0 +1,452 @@
+# Final domain knowledge check across all four sections.
+---
+schema_version: 1
+kind: question_bank
+id: ats072-final
+course_id: ATS072
+exam_code: CBA
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: domain
+  id: customizing-backstage
+  title: Customizing Backstage
+questions:
+- id: ats072-final-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Distinguish browser features from server-side plugin responsibilities
+  source_readings:
+  - sections/section-010/module-01/course-01-what-a-frontend-plugin-package-contains.md
+  prompt: The `scout-status` feature must call a private fleet-status system that
+    needs an API key. Where should the code that holds the key and calls that system
+    live?
+  options:
+  - id: a
+    text: In the route reference, because route references are not shown to users.
+    explanation: A route reference only stands for a page address and cannot protect
+      a value.
+  - id: b
+    text: In the frontend plugin, in a constant next to the page component.
+    explanation: The browser downloads all frontend plugin code, so every user could
+      read the key.
+  - id: c
+    text: In a backend plugin, which reads the key from configuration and returns
+      only the result to the page.
+    explanation: Correct. A backend plugin runs on the server, can read secrets from
+      configuration and exposes only the data the page needs.
+  - id: d
+    text: In `packages/app/src/App.tsx`, because the app package is private.
+    explanation: The app package is built into the browser bundle, so the key would
+      still reach users.
+  correct_option: c
+  explanation: Correct. A backend plugin runs on the server, can read secrets from
+    configuration and exposes only the data the page needs.
+- id: ats072-final-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Diagnose a missing plugin page by finding the missing registration
+    step
+  source_readings:
+  - sections/section-010/module-01/course-02-registering-a-plugin-in-the-app-package.md
+  prompt: '`App.tsx` contains `{/* <Route path="/scout-status" element={<ScoutStatusPage
+    />} /> */}` and the page is not reachable. Why?'
+  options:
+  - id: a
+    text: The plugin id must be written in upper case.
+    explanation: Plugin ids are lower case and unrelated to the comment.
+  - id: b
+    text: "`FlatRoutes` ignores routes whose path starts with a slash."
+    explanation: "`FlatRoutes` matches normal paths such as `/catalog`."
+  - id: c
+    text: The JSX comment is not a route, so no route renders the page.
+    explanation: Correct. A commented-out element is never created, even though `grep`
+      finds the text.
+  - id: d
+    text: The route needs the `exact` property.
+    explanation: The routes of `FlatRoutes` do not need `exact`.
+  correct_option: c
+  explanation: Correct. A commented-out element is never created, even though `grep`
+    finds the text.
+- id: ats072-final-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Place routes correctly in the legacy app
+  source_readings:
+  - sections/section-010/module-01/course-02-registering-a-plugin-in-the-app-package.md
+  prompt: A developer adds a valid `<Route path="/scout-status" element={<ScoutStatusPage
+    />} />` after the closing `</FlatRoutes>` tag. What is the most likely result?
+  options:
+  - id: a
+    text: The route is outside `FlatRoutes`, so it may never match and the page stays
+      unreachable.
+    explanation: Correct. `FlatRoutes` picks the matching route among its children.
+  - id: b
+    text: The backend rejects the request with a 401.
+    explanation: This is a frontend routing problem, not an authentication problem.
+  - id: c
+    text: The page works, because every `Route` in the file takes part in matching.
+    explanation: Only routes inside `FlatRoutes` are matched against the address.
+  - id: d
+    text: The build fails because `Route` is not imported.
+    explanation: "`Route` is imported in the file; the problem is the position."
+  correct_option: a
+  explanation: Correct. `FlatRoutes` picks the matching route among its children.
+- id: ats072-final-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain how a backend plugin is loaded and reached
+  source_readings:
+  - sections/section-010/module-02/course-01-backend-plugins-and-the-new-backend-system.md
+  prompt: The package `@internal/plugin-scout-status-backend` is a dependency of `packages/backend`
+    and its code is correct, but its endpoint returns 404. `index.ts` has the line
+    `// backend.add(import('@internal/plugin-scout-status-backend'));`. What is the
+    cause?
+  options:
+  - id: a
+    text: The database service is missing.
+    explanation: The router does not need a database to return a 404 for a missing
+      mount.
+  - id: b
+    text: The comment means the plugin is never loaded, so its router is never mounted.
+    explanation: Correct. A package starts only when an active `backend.add(import(...))`
+      loads it.
+  - id: c
+    text: The `-backend` suffix must be removed from the package name.
+    explanation: The package name is fine; the suffix is removed from the plugin id,
+      not the package name.
+  - id: d
+    text: The frontend must call `/status` instead of `/api/scout-status/status`.
+    explanation: The path is built from the plugin id, and the cause here is that
+      nothing is mounted.
+  correct_option: b
+  explanation: Correct. A package starts only when an active `backend.add(import(...))`
+    loads it.
+- id: ats072-final-q05
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain which configuration files Backstage loads and in what
+    order
+  source_readings:
+  - sections/section-020/module-01/course-01-how-backstage-loads-and-layers-configuration.md
+  prompt: The `scout-status` backend starts with `--config app-config.production.yaml`
+    and no other `--config` flag. A developer's `app-config.local.yaml` and the base
+    `app-config.yaml` both exist in the repository root. Which files does Backstage
+    load?
+  options:
+  - id: a
+    text: "`app-config.yaml`, `app-config.local.yaml` and `app-config.production.yaml`."
+    explanation: The default files load only when no `--config` flag is given.
+  - id: b
+    text: "`app-config.production.yaml` and `app-config.local.yaml`."
+    explanation: The local file is a default file and is not loaded once a `--config`
+      flag is used.
+  - id: c
+    text: "`app-config.yaml` and `app-config.production.yaml`."
+    explanation: The base file is not loaded unless a `--config` flag names it.
+  - id: d
+    text: Only `app-config.production.yaml`.
+    explanation: Correct. Any `--config` flag turns off automatic loading of the two
+      default files, so only the named files load.
+  correct_option: d
+  explanation: Correct. Any `--config` flag turns off automatic loading of the two
+    default files, so only the named files load.
+- id: ats072-final-q06
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain what the three @visibility levels do
+  source_readings:
+  - sections/section-020/module-01/course-02-declaring-a-configuration-schema-in-config-d-ts.md
+  prompt: The schema of `scout-status` has no `@visibility` tag on the key `scoutStatus.title`.
+    A React component calls `config.getString('scoutStatus.title')` in the browser.
+    What is the result?
+  options:
+  - id: a
+    text: The call returns the value only in development builds.
+    explanation: Visibility does not depend on the build mode.
+  - id: b
+    text: The call fails, because a key without a tag is visible to the backend only.
+    explanation: Correct. The default visibility is `backend`, so the browser configuration
+      does not contain the key.
+  - id: c
+    text: The call returns an empty string and logs a warning.
+    explanation: A required read of a missing value throws.
+  - id: d
+    text: The call returns the value, because every key is visible to the browser
+      by default.
+    explanation: The default is backend only. Only `frontend` makes a key visible
+      to the browser.
+  correct_option: b
+  explanation: Correct. The default visibility is `backend`, so the browser configuration
+    does not contain the key.
+- id: ats072-final-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Register a configuration schema in package.json
+  source_readings:
+  - sections/section-020/module-01/course-02-declaring-a-configuration-schema-in-config-d-ts.md
+  prompt: A developer adds a correct `config.d.ts` with `@visibility secret` on the
+    token to the plugin package, but does not change `package.json`. What is the effect?
+  options:
+  - id: a
+    text: The backend refuses to start until the field exists.
+    explanation: A missing field does not stop the start. It means no schema exists
+      for the package.
+  - id: b
+    text: Backstage ignores the file, so nothing validates or filters the keys.
+    explanation: Correct. The schema is found only through the top-level `configSchema`
+      field, and the file must also be listed in `files`.
+  - id: c
+    text: Only the `@visibility` tags work, and type checks do not.
+    explanation: Without the field, nothing from the file is used.
+  - id: d
+    text: Backstage finds `config.d.ts` by its name and applies the tags.
+    explanation: Backstage does not search for the file. It reads the `configSchema`
+      field.
+  correct_option: b
+  explanation: Correct. The schema is found only through the top-level `configSchema`
+    field, and the file must also be listed in `files`.
+- id: ats072-final-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain why a plugin must not read process.env directly
+  source_readings:
+  - sections/section-020/module-01/course-03-reading-configuration-in-backend-and-frontend-plugins.md
+  prompt: A reviewer rejects a backend plugin that contains `const token = process.env.SCOUT_API_TOKEN`.
+    What is the best reason?
+  options:
+  - id: a
+    text: "`process.env` values are exposed to the browser."
+    explanation: They are not. The issue is bypassing the configuration system.
+  - id: b
+    text: Environment variables cannot hold secrets.
+    explanation: They can. A configuration value may be set with `${NAME}` or `$env`
+      from an environment variable.
+  - id: c
+    text: "`process.env` is not available in the Node.js backend."
+    explanation: It is available. The problem is that it skips the configuration system.
+  - id: d
+    text: The value bypasses the configuration files, the schema and the layering,
+      so operators cannot find or validate it.
+    explanation: Correct. Reading through `rootConfig` keeps every setting in the
+      configuration system.
+  correct_option: d
+  explanation: Correct. Reading through `rootConfig` keeps every setting in the configuration
+    system.
+- id: ats072-final-q09
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Write a function component that takes typed props
+  source_readings:
+  - sections/section-030/module-01/course-01-jsx-function-components-and-props.md
+  prompt: The `OutpostCard` in the `scout-status` plugin always shows `outpost-alpha`.
+    The `ScoutStatusPage` must show a different outpost name for each card. What is
+    the correct change?
+  options:
+  - id: a
+    text: Create a global variable that the page sets before it renders the card.
+    explanation: The card would read shared mutable state instead of props, and two
+      cards on one page would show the same value.
+  - id: b
+    text: Call `fetch` inside the card to ask the page which name to use.
+    explanation: A child does not request its props from the parent; the parent passes
+      them in the JSX.
+  - id: c
+    text: 'Declare an `OutpostCardProps` interface with `name: string`, destructure
+      `name` in the card and pass `name="..."` from the page.'
+    explanation: Correct. A parent passes data to a child as props, and the interface
+      lets the compiler check the callers.
+  - id: d
+    text: Write the component name in lowercase so that React reads the props.
+    explanation: A lowercase name makes React treat the tag as an HTML element, so
+      the function is never called.
+  correct_option: c
+  explanation: Props carry data from parent to child, and an interface types them.
+- id: ats072-final-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Spot a stale value caused by a missing dependency
+  source_readings:
+  - sections/section-030/module-01/course-02-state-and-effects-with-hooks.md
+  prompt: After a change, the browser tab title shows the new count but still shows
+    the old outpost name when the parent passes a new `outpost`. The effect uses `[count]`.
+    What is wrong?
+  options:
+  - id: a
+    text: "`useState` cannot hold a number."
+    explanation: "`useState` holds any value, including a number."
+  - id: b
+    text: The effect must return a cleanup function.
+    explanation: A cleanup is for timers and subscriptions, not for a title that is
+      set again.
+  - id: c
+    text: "`outpost` is read by the effect but missing from the array, so the effect
+      uses a stale value."
+    explanation: Correct. A value the effect reads must be in the array.
+  - id: d
+    text: The effect runs before the render.
+    explanation: An effect runs after React has updated the page.
+  correct_option: c
+  explanation: Missing dependencies cause stale values.
+- id: ats072-final-q11
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Apply the rules of hooks
+  source_readings:
+  - sections/section-030/module-01/course-02-state-and-effects-with-hooks.md
+  prompt: A developer writes `if (outpost) { const [count, setCount] = useState(0);
+    }`. Why is this a problem?
+  options:
+  - id: a
+    text: "`useState` needs two arguments."
+    explanation: "`useState` takes one initial value."
+  - id: b
+    text: "`useState` cannot be used with a string prop."
+    explanation: The type of the prop does not matter.
+  - id: c
+    text: Hooks can only be used in `.ts` files.
+    explanation: Hooks in components live in `.tsx` files; the issue is the condition.
+  - id: d
+    text: React identifies hook values by call order, and a hook inside a condition
+      changes that order between renders.
+    explanation: Correct. Hooks must be called at the top level in the same order
+      on every render.
+  correct_option: d
+  explanation: Hooks are called at the top level in a stable order.
+- id: ats072-final-q12
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Get the catalog client with useApi
+  source_readings:
+  - sections/section-030/module-02/course-01-reading-catalog-data-with-useapi.md
+  prompt: A card must read catalog entities. Which approach follows Backstage practice?
+  options:
+  - id: a
+    text: Call `fetch('http://localhost:7007/api/catalog/entities')` in the render
+      body.
+    explanation: The address is fixed, there is no token, and the call repeats on
+      each render.
+  - id: b
+    text: Import the backend plugin into the component.
+    explanation: Backend plugins do not run in the browser.
+  - id: c
+    text: Read the entities from `app-config.yaml` with `process.env`.
+    explanation: The catalog entities are stored by the catalog backend, not in browser
+      environment values.
+  - id: d
+    text: Call `useApi(catalogApiRef)` to get the catalog client and call `getEntities`
+      in an async function.
+    explanation: Correct. The app provides the client with the right base URL and
+      authentication.
+  correct_option: d
+  explanation: "`useApi` returns the Utility API behind an `ApiRef`."
+- id: ats072-final-q13
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Identify the Material UI generation of a plugin from its imports
+    and package.json
+  source_readings:
+  - sections/section-040/module-01/course-01-material-ui-versions-and-import-paths.md
+  prompt: The `scout` plugin imports `import Grid from '@material-ui/core/Grid'` and
+    its `package.json` lists `@material-ui/core` under dependencies. Which statement
+    is correct?
+  options:
+  - id: a
+    text: The generation cannot be known until the plugin is built.
+    explanation: The import path and `package.json` already tell the generation, with
+      no build.
+  - id: b
+    text: The plugin uses Material UI v4, because the `@material-ui` scope is the
+      v4 package family.
+    explanation: 'Correct. The npm scope identifies the generation: `@material-ui`
+      is v4 and `@mui` is v5.'
+  - id: c
+    text: The plugin uses Material UI v5, because `Grid` exists only in v5.
+    explanation: "`Grid` exists in both generations. The scope decides the generation."
+  - id: d
+    text: The plugin uses both generations, because `core` appears in the name.
+    explanation: The word `core` is part of the v4 package name. It does not mean
+      both generations.
+  correct_option: b
+  explanation: 'Correct. The npm scope identifies the generation: `@material-ui` is
+    v4 and `@mui` is v5.'
+- id: ats072-final-q14
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Choose between Button with href and a router link
+  source_readings:
+  - sections/section-040/module-01/course-02-grid-typography-button-and-card.md
+  prompt: A card must open another page of the same Backstage app without a full page
+    reload. Which choice is best?
+  options:
+  - id: a
+    text: A `Typography` with a `variant` of `button`.
+    explanation: "`variant` changes only the text style. It adds no navigation."
+  - id: b
+    text: A `Button` with `href`, because Material UI always routes in the app.
+    explanation: "`Button` with `href` renders a plain anchor, which causes a full
+      page load."
+  - id: c
+    text: A `div` with an `onClick` that sets `window.location`.
+    explanation: A `div` has no role and no keyboard focus, and it also reloads the
+      page.
+  - id: d
+    text: A `Button` rendered as the Backstage `Link` from `@backstage/core-components`
+      with a `to` prop.
+    explanation: Correct. `Link` uses the app router, and the button keeps the link
+      semantics.
+  correct_option: d
+  explanation: Correct. `Link` uses the app router, and the button keeps the link
+    semantics.
+- id: ats072-final-q15
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain what InfoCard adds over a plain Material UI card
+  source_readings:
+  - sections/section-040/module-01/course-02-grid-typography-button-and-card.md
+  prompt: Why does the example plugin use `InfoCard` from `@backstage/core-components`
+    and not `Card` from Material UI?
+  options:
+  - id: a
+    text: "`InfoCard` is v5 only, so it removes the need for `makeStyles`."
+    explanation: "`InfoCard` does not remove the need for styles, and a plugin keeps
+      one generation."
+  - id: b
+    text: "`Card` is not available in Material UI v4."
+    explanation: "`Card` exists in v4. The reason to prefer `InfoCard` is portal consistency."
+  - id: c
+    text: "`InfoCard` is the only card that works with `Grid`."
+    explanation: "`Card` also works inside a `Grid` item."
+  - id: d
+    text: "`InfoCard` provides the portal card look, a `title`, optional `deepLink`
+      and `actions`, and an error boundary around its content."
+    explanation: Correct. It follows the portal conventions and keeps one failing
+      card from blanking the page.
+  correct_option: d
+  explanation: Correct. It follows the portal conventions and keeps one failing card
+    from blanking the page.
+- id: ats072-final-q16
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Create and register a unified theme
+  source_readings:
+  - sections/section-040/module-02/course-01-creating-and-registering-a-theme.md
+  prompt: A custom theme file exports `scoutTheme`, built with `createUnifiedTheme`.
+    The portal still shows the default colors. What is the most likely cause?
+  options:
+  - id: a
+    text: Themes apply only after the backend restarts.
+    explanation: A theme is frontend code, and the backend plays no part.
+  - id: b
+    text: The theme was never passed to `createApp` through a `themes` entry with
+      a `UnifiedThemeProvider` Provider.
+    explanation: Correct. An unused theme file is valid code and changes nothing.
+  - id: c
+    text: "`createUnifiedTheme` can only build dark themes."
+    explanation: It builds light and dark themes from the palettes you pass.
+  - id: d
+    text: The palette must be written without `palettes.light`.
+    explanation: Spreading `palettes.light` is the normal way to start from the defaults.
+  correct_option: b
+  explanation: Correct. An unused theme file is valid code and changes nothing.

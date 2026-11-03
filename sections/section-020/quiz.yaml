@@ -1,0 +1,358 @@
+# Knowledge check for section 020. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats072-020
+course_id: ATS072
+exam_code: CBA
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-020
+  title: "Customizing Backstage plugins"
+questions:
+  - id: ats072-020-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Explain which configuration files Backstage loads and in what order"
+    source_readings:
+      - sections/section-020/module-01/course-01-how-backstage-loads-and-layers-configuration.md
+    prompt: |-
+      The `scout-status` backend starts with `--config app-config.production.yaml` and no other `--config` flag. A developer's `app-config.local.yaml` and the base `app-config.yaml` both exist in the repository root. Which files does Backstage load?
+    options:
+      - id: a
+        text: "`app-config.yaml`, `app-config.local.yaml` and `app-config.production.yaml`."
+        explanation: "The default files load only when no `--config` flag is given."
+      - id: b
+        text: "`app-config.production.yaml` and `app-config.local.yaml`."
+        explanation: "The local file is a default file and is not loaded once a `--config` flag is used."
+      - id: c
+        text: "`app-config.yaml` and `app-config.production.yaml`."
+        explanation: "The base file is not loaded unless a `--config` flag names it."
+      - id: d
+        text: "Only `app-config.production.yaml`."
+        explanation: "Correct. Any `--config` flag turns off automatic loading of the two default files, so only the named files load."
+    correct_option: d
+    explanation: "Correct. Any `--config` flag turns off automatic loading of the two default files, so only the named files load."
+  - id: ats072-020-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Predict how objects and arrays merge across configuration files"
+    source_readings:
+      - sections/section-020/module-01/course-01-how-backstage-loads-and-layers-configuration.md
+    prompt: |-
+      `app-config.yaml` sets `scoutStatus.allowedHosts` to a list of three host names and `scoutStatus.title` to `Scout Status`. `app-config.production.yaml` sets `scoutStatus.allowedHosts` to a list of one host name and does not mention `title`. Both files are loaded in that order. What does the plugin read?
+    options:
+      - id: a
+        text: "One host name in `allowedHosts` and the title `Scout Status`."
+        explanation: "Correct. Arrays are replaced as a whole, and objects merge key by key, so `title` stays."
+      - id: b
+        text: "Four host names and the title `Scout Status`."
+        explanation: "Arrays do not merge by appending."
+      - id: c
+        text: "Three host names and the title `Scout Status`."
+        explanation: "The production file has higher priority, so its array replaces the base array."
+      - id: d
+        text: "One host name and no title."
+        explanation: "The object `scoutStatus` merges key by key, so `title` from the base file stays."
+    correct_option: a
+    explanation: "Correct. Arrays are replaced as a whole, and objects merge key by key, so `title` stays."
+  - id: ats072-020-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Keep secrets out of YAML with substitution"
+    source_readings:
+      - sections/section-020/module-01/course-01-how-backstage-loads-and-layers-configuration.md
+    prompt: |-
+      The file has `apiToken: ${SCOUT_API_TOKEN}` and the backend reads it with `getString`. A new environment starts without the variable `SCOUT_API_TOKEN`. What happens?
+    options:
+      - id: a
+        text: "The backend uses the empty string and starts normally."
+        explanation: "Substitution without a default does not produce an empty string for an unset variable."
+      - id: b
+        text: "The value is `undefined`, so the required read fails with an error that names the key."
+        explanation: "Correct. Without a default, a missing variable makes the whole value `undefined`, and `getString` throws for a missing value."
+      - id: c
+        text: "Backstage prints the literal text `${SCOUT_API_TOKEN}` as the value."
+        explanation: "The loader replaces the pattern. It does not keep it as text unless you escape it with `$${`."
+      - id: d
+        text: "The loader reads `app-config.local.yaml` as a fallback for the variable."
+        explanation: "Local files are config files, not a fallback for environment variables."
+    correct_option: b
+    explanation: "Correct. Without a default, a missing variable makes the whole value `undefined`, and `getString` throws for a missing value."
+  - id: ats072-020-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Choose between $env, $file and $include"
+    source_readings:
+      - sections/section-020/module-01/course-01-how-backstage-loads-and-layers-configuration.md
+    prompt: |-
+      The deployment platform mounts the token as a text file at `/run/secrets/scout-token`, and no environment variable holds it. Which configuration entry reads the whole content of that file?
+    options:
+      - id: a
+        text: "`apiToken: { $include: /run/secrets/scout-token#value }`"
+        explanation: "`$include` loads `.json`, `.yml` or `.yaml` files and selects a value by key."
+      - id: b
+        text: "`apiToken: { $env: /run/secrets/scout-token }`"
+        explanation: "`$env` reads an environment variable by name, not a file."
+      - id: c
+        text: "`apiToken: { $file: /run/secrets/scout-token }`"
+        explanation: "Correct. `$file` reads the whole content of a text file."
+      - id: d
+        text: "`apiToken: ${/run/secrets/scout-token}`"
+        explanation: "Substitution reads environment variables by name."
+    correct_option: c
+    explanation: "Correct. `$file` reads the whole content of a text file."
+  - id: ats072-020-q05
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Explain what the three @visibility levels do"
+    source_readings:
+      - sections/section-020/module-01/course-02-declaring-a-configuration-schema-in-config-d-ts.md
+    prompt: |-
+      The schema of `scout-status` has no `@visibility` tag on the key `scoutStatus.title`. A React component calls `config.getString('scoutStatus.title')` in the browser. What is the result?
+    options:
+      - id: a
+        text: "The call returns the value only in development builds."
+        explanation: "Visibility does not depend on the build mode."
+      - id: b
+        text: "The call fails, because a key without a tag is visible to the backend only."
+        explanation: "Correct. The default visibility is `backend`, so the browser configuration does not contain the key."
+      - id: c
+        text: "The call returns an empty string and logs a warning."
+        explanation: "A required read of a missing value throws."
+      - id: d
+        text: "The call returns the value, because every key is visible to the browser by default."
+        explanation: "The default is backend only. Only `frontend` makes a key visible to the browser."
+    correct_option: b
+    explanation: "Correct. The default visibility is `backend`, so the browser configuration does not contain the key."
+  - id: ats072-020-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Register a configuration schema in package.json"
+    source_readings:
+      - sections/section-020/module-01/course-02-declaring-a-configuration-schema-in-config-d-ts.md
+    prompt: |-
+      A developer adds a correct `config.d.ts` with `@visibility secret` on the token to the plugin package, but does not change `package.json`. What is the effect?
+    options:
+      - id: a
+        text: "The backend refuses to start until the field exists."
+        explanation: "A missing field does not stop the start. It means no schema exists for the package."
+      - id: b
+        text: "Backstage ignores the file, so nothing validates or filters the keys."
+        explanation: "Correct. The schema is found only through the top-level `configSchema` field, and the file must also be listed in `files`."
+      - id: c
+        text: "Only the `@visibility` tags work, and type checks do not."
+        explanation: "Without the field, nothing from the file is used."
+      - id: d
+        text: "Backstage finds `config.d.ts` by its name and applies the tags."
+        explanation: "Backstage does not search for the file. It reads the `configSchema` field."
+    correct_option: b
+    explanation: "Correct. The schema is found only through the top-level `configSchema` field, and the file must also be listed in `files`."
+  - id: ats072-020-q07
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Reason about schema merging across packages"
+    source_readings:
+      - sections/section-020/module-01/course-02-declaring-a-configuration-schema-in-config-d-ts.md
+    prompt: |-
+      Package A declares `shared.apiKey` with `@visibility frontend`. Package B declares the same key with `@visibility secret`. Both are installed in one app. What happens when the schemas merge?
+    options:
+      - id: a
+        text: "`secret` wins, because it is the stricter level."
+        explanation: "There is no precedence rule. The conflict is an error."
+      - id: b
+        text: "`frontend` wins, because it is the more permissive level."
+        explanation: "There is no precedence rule. The conflict is an error."
+      - id: c
+        text: "The merge fails, because the same value cannot be both `frontend` and `secret`."
+        explanation: "Correct. Conflicting visibility for one key is an error during schema merging, and each key needs one owner."
+      - id: d
+        text: "The key becomes visible to the backend only."
+        explanation: "The merge does not downgrade the key. It reports the conflict."
+    correct_option: c
+    explanation: "Correct. Conflicting visibility for one key is an error during schema merging, and each key needs one owner."
+  - id: ats072-020-q08
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Read configuration in a backend plugin with coreServices.rootConfig"
+    source_readings:
+      - sections/section-020/module-01/course-03-reading-configuration-in-backend-and-frontend-plugins.md
+    prompt: |-
+      A new-backend-system plugin needs `scoutStatus.apiUrl` in `init`. Which declaration gives it the configuration object?
+    options:
+      - id: a
+        text: "`process.env.SCOUT_API_URL` inside `init`."
+        explanation: "This skips files, layering and the schema."
+      - id: b
+        text: "`useApi(configApiRef)` inside `init`."
+        explanation: "`useApi` and `configApiRef` are for React components."
+      - id: c
+        text: "`import config from '../app-config.yaml'`."
+        explanation: "A plugin never imports the file. The loader merges and validates files before the plugin reads them."
+      - id: d
+        text: "`deps: { config: coreServices.rootConfig }` in `registerInit`."
+        explanation: "Correct. The plugin asks for the service in `deps` and receives it in `init`."
+    correct_option: d
+    explanation: "Correct. The plugin asks for the service in `deps` and receives it in `init`."
+  - id: ats072-020-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain why a plugin must not read process.env directly"
+    source_readings:
+      - sections/section-020/module-01/course-03-reading-configuration-in-backend-and-frontend-plugins.md
+    prompt: |-
+      A reviewer rejects a backend plugin that contains `const token = process.env.SCOUT_API_TOKEN`. What is the best reason?
+    options:
+      - id: a
+        text: "`process.env` values are exposed to the browser."
+        explanation: "They are not. The issue is bypassing the configuration system."
+      - id: b
+        text: "Environment variables cannot hold secrets."
+        explanation: "They can. A configuration value may be set with `${NAME}` or `$env` from an environment variable."
+      - id: c
+        text: "`process.env` is not available in the Node.js backend."
+        explanation: "It is available. The problem is that it skips the configuration system."
+      - id: d
+        text: "The value bypasses the configuration files, the schema and the layering, so operators cannot find or validate it."
+        explanation: "Correct. Reading through `rootConfig` keeps every setting in the configuration system."
+    correct_option: d
+    explanation: "Correct. Reading through `rootConfig` keeps every setting in the configuration system."
+  - id: ats072-020-q10
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Register a backend module so that it takes effect"
+    source_readings:
+      - sections/section-020/module-02/course-01-extending-backend-plugins-with-modules-and-extension-points.md
+    prompt: |-
+      A team writes `catalogModuleScoutProcessor` and its tests pass. After a deploy, the catalog never runs the processor and no error appears. In `packages/backend/src/index.ts` the line `// backend.add(import('@internal/backstage-plugin-catalog-backend-module-scout'));` is present. What is the cause?
+    options:
+      - id: a
+        text: "A commented line adds nothing, so the backend never loads the module."
+        explanation: "Correct. The module must be added with an active `backend.add(import(...))` line."
+      - id: b
+        text: "The module needs a frontend page to run."
+        explanation: "A backend module does not depend on a frontend extension."
+      - id: c
+        text: "The module needs the `scout` plugin installed first."
+        explanation: "A module extends the `pluginId` it names. Here that is `catalog`."
+      - id: d
+        text: "The processor must be registered in `app-config.yaml`."
+        explanation: "Processors are added through the extension point in code."
+    correct_option: a
+    explanation: "Correct. The module must be added with an active `backend.add(import(...))` line."
+  - id: ats072-020-q11
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Choose the pluginId and the extension point for a catalog module"
+    source_readings:
+      - sections/section-020/module-02/course-01-extending-backend-plugins-with-modules-and-extension-points.md
+    prompt: |-
+      A module must run extra code for every entity that the catalog processes. Which combination is correct?
+    options:
+      - id: a
+        text: "`pluginId: 'catalog'` and `catalogProcessingExtensionPoint` in `deps`, with `catalog.addProcessor(...)` in `init`."
+        explanation: "Correct. A module names the plugin it extends and asks that plugin's extension point."
+      - id: b
+        text: "`pluginId: 'permission'` and `policyExtensionPoint`."
+        explanation: "That pair extends the permission plugin."
+      - id: c
+        text: "`createBackendPlugin` with `pluginId: 'catalog'`."
+        explanation: "A second plugin with the same ID is not a module and does not extend the catalog."
+      - id: d
+        text: "`pluginId: 'scout-status'` and `coreServices.logger` only."
+        explanation: "The module would extend a different plugin and has no way to add a processor."
+    correct_option: a
+    explanation: "Correct. A module names the plugin it extends and asks that plugin's extension point."
+  - id: ats072-020-q12
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Choose the smallest supported frontend change"
+    source_readings:
+      - sections/section-020/module-02/course-02-overriding-frontend-extensions-without-forking.md
+    prompt: |-
+      A team wants the page `page:scout-status` at `/fleet-status` and the plugin already accepts a `path` in its extension configuration. What is the smallest supported change?
+    options:
+      - id: a
+        text: "Add an `app.extensions` entry for `page:scout-status` with `config.path: /fleet-status`."
+        explanation: "Correct. Configuration needs no code and survives upgrades best."
+      - id: b
+        text: "Write a `createFrontendModule` that replaces the page."
+        explanation: "A module works, but it is a larger change than the setting needs."
+      - id: c
+        text: "Edit the plugin in `node_modules`."
+        explanation: "The next install overwrites the change."
+      - id: d
+        text: "Copy the plugin into the repository and change the route."
+        explanation: "A copy is a private fork with maintenance cost."
+    correct_option: a
+    explanation: "Correct. Configuration needs no code and survives upgrades best."
+  - id: ats072-020-q13
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Write a permission decision that follows the contract"
+    source_readings:
+      - sections/section-020/module-02/course-03-permission-policies-compatibility-and-upgrades.md
+    prompt: |-
+      A policy's `handle` method ends with `return AuthorizeResult.DENY;`. The compiler reports no error in a loosely typed test. What is wrong with it for the permission framework?
+    options:
+      - id: a
+        text: "A decision must be an object, so it should return `{ result: AuthorizeResult.DENY }`."
+        explanation: "Correct. `PolicyDecision` is an object with a `result` field."
+      - id: b
+        text: "`handle` must be synchronous and may not return a promise."
+        explanation: "`handle` returns `Promise<PolicyDecision>`."
+      - id: c
+        text: "A policy may only return `ALLOW`."
+        explanation: "A policy may deny. Denying is the main purpose of a restricting rule."
+      - id: d
+        text: "`DENY` is not a value of `AuthorizeResult`."
+        explanation: "`DENY` exists, together with `ALLOW` and `CONDITIONAL`."
+    correct_option: a
+    explanation: "Correct. `PolicyDecision` is an object with a `result` field."
+  - id: ats072-020-q14
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain why server-side permission checks cannot be replaced by hiding UI elements"
+    source_readings:
+      - sections/section-020/module-02/course-03-permission-policies-compatibility-and-upgrades.md
+    prompt: |-
+      A frontend override removes the Delete button from the entity page for everyone except administrators. A developer calls the catalog backend delete endpoint with `curl` and a valid user token. Which statement is correct?
+    options:
+      - id: a
+        text: "The request always fails, because tokens are tied to the browser."
+        explanation: "A valid token works for any client."
+      - id: b
+        text: "The request fails, because the frontend registered the restriction with the backend."
+        explanation: "A frontend override does not register anything with the backend."
+      - id: c
+        text: "The backend permission policy decides the request. The hidden button does not change it."
+        explanation: "Correct. Only the backend decides authorization. Hiding a control is presentation."
+      - id: d
+        text: "The request is allowed only if the user opens the page first."
+        explanation: "The backend does not check page visits."
+    correct_option: c
+    explanation: "Correct. Only the backend decides authorization. Hiding a control is presentation."
+  - id: ats072-020-q15
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Keep customizations compatible across upgrades"
+    source_readings:
+      - sections/section-020/module-02/course-03-permission-policies-compatibility-and-upgrades.md
+    prompt: |-
+      After a Backstage upgrade, two plugin packages ask for different versions of `@backstage/backend-plugin-api` and the backend starts with confusing errors. What should the team do?
+    options:
+      - id: a
+        text: "Hide the error by catching it in the plugin."
+        explanation: "The mismatch remains and the behavior is still wrong."
+      - id: b
+        text: "Fork the older plugin and rewrite it."
+        explanation: "A fork adds ongoing maintenance and does not remove the version mismatch."
+      - id: c
+        text: "Move all `@backstage` packages together with `yarn backstage-cli versions:bump` and check that each package.json asks for the same version."
+        explanation: "Correct. Packages from different releases cause errors that look unrelated, and the command updates them together."
+      - id: d
+        text: "Pin each package to the oldest version that starts."
+        explanation: "Mixed versions keep the problem."
+    correct_option: c
+    explanation: "Correct. Packages from different releases cause errors that look unrelated, and the command updates them together."

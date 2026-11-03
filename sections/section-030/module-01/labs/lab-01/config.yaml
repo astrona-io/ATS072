@@ -1,0 +1,66 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# React Components, Props And Hooks Lab (LAB). Built untested: only static checks were run.
+apiVersion: astrona.io/v1
+metadata:
+  name: "ats-072-lab-030-01"
+  docs:
+    question: "question.md"
+    solution: "solution.md"
+
+runtime:
+  type: "qemu"
+  qemu:
+  - image:
+      type: "oci"
+      source: "ghcr.io/astrona-io/ubuntu-qcow2-image:24.04-lfcs-{ARCH}"
+    cpus: 2
+    memoryMB: 2048
+    diskSizeGB: 15
+    display: false
+
+bootstrap:
+  init:
+    - name: "write-backstage-app"
+      description: "Write the Backstage app for React Components, Props And Hooks Lab"
+      type: "file"
+      source: "bootstrap/01-setup.sh"
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: "apply-solution"
+      description: "Write the reference solution files"
+      type: "file"
+      source: "solution/apply.sh"
+
+validation:
+  scripts:
+    - name: "route-registered"
+      description: "App.tsx imports ScoutStatusPage and routes /scout-status inside FlatRoutes"
+      type: "file"
+      source: "validation/validate-route.sh"
+      hint: "In App.tsx import ScoutStatusPage from '@internal/plugin-scout-status' and add a Route with path=\"/scout-status\" inside FlatRoutes."
+    - name: "sidebar-item"
+      description: "Root.tsx has a SidebarItem for scout-status with an icon and a text"
+      type: "file"
+      source: "validation/validate-sidebar.sh"
+      hint: "Add a SidebarItem with icon={ExtensionIcon}, to=\"scout-status\" and a text in the Menu group of Root.tsx."
+    - name: "outpost-card-props"
+      description: "OutpostCard takes typed name and optional crew props and shows them"
+      type: "file"
+      source: "validation/validate-props.sh"
+      hint: "Declare an OutpostCardProps interface with name: string and crew?: number, destructure them, render them and remove the fixed text."
+    - name: "effect-dependencies"
+      description: "The CrewCounter effect lists outpost and count as dependencies"
+      type: "file"
+      source: "validation/validate-effect.sh"
+      hint: "Add a dependency array [outpost, count] as the second argument of useEffect."
+    - name: "page-passes-props"
+      description: "ScoutStatusPage passes name and crew to OutpostCard and outpost to CrewCounter"
+      type: "file"
+      source: "validation/validate-composition.sh"
+      hint: "In ScoutStatusPage.tsx write <OutpostCard name=\"outpost-alpha\" crew={12} /> and <CrewCounter outpost=\"outpost-alpha\" />."
+
+teardown:
+  keepCluster: false

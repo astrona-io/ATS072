@@ -5,12 +5,13 @@ exam_objectives:
 ---
 # Make changes to React code in Backstage App
 
-This section covers make changes to React code in Backstage App. It develops react Composition, State And Asynchronous Catalog Features through mechanisms, examples, prerequisites and failure reasoning.
+This section covers the React code behind a Backstage app. You work in a playground virtual machine that holds a small Backstage-style project, edit TypeScript and TSX files, and check the result with the validation scripts of the graded labs. The first module covers function components, props, hooks, routes and the sidebar. The second module covers asynchronous catalog data with `useApi`, `catalogApiRef` and `useAsync`, the four request states, stable keys and accessible output.
 
-Read the module goals, teaching and closing summary in order. YAML checks are indexed separately and appear after designated summaries. Larger domains can include intermediate checkpoints before the final review.
+Each module has a playground, a graded lab after its readings and a summary. The section ends with a capstone lab that combines both modules and a quiz.
 
 ## Learning Outcomes
 
-- Explain component properties, state and side-effect boundaries.
-- Distinguish loading, missing data, success and failure in a portal feature.
-- Reason about stable identity, accessibility and frontend API use.
+- Write function components with typed props, `useState` and `useEffect`, and use a correct dependency array.
+- Register a plugin page with a `Route` in `App.tsx` and a `SidebarItem` in the sidebar component.
+- Read catalog data with `useApi(catalogApiRef)` and `useAsync`, and render loading, empty, success and error states with `Progress` and `ResponseErrorPanel`.
+- Use stable keys and accessible output, and keep authorization on the backend.

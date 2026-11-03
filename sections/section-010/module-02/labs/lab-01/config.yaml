@@ -1,0 +1,78 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Install A Backend Plugin And A Module
+# Built untested: only `astrona validate`, `bash -n` and YAML parsing have been run.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-072-lab-010-02
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: "qemu"
+  qemu:
+    - image:
+        type: "oci"
+        source: "ghcr.io/astrona-io/ubuntu-qcow2-image:24.04-lfcs-{ARCH}"
+      cpus: 2
+      memoryMB: 2048
+      diskSizeGB: 15
+      display: false
+
+bootstrap:
+  init:
+    - name: seed-project
+      description: "Write the Backstage-style project with the backend plugin and module not yet loaded"
+      type: file
+      source: bootstrap/01-setup.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: backend-plugin-id
+      description: "createBackendPlugin uses pluginId scout-status"
+      type: file
+      source: validation/validate-backend-plugin-id.sh
+      hint: "The plugin id must be scout-status so the router is served at /api/scout-status. Do not add the -backend suffix."
+    - name: plugin-mounts-router
+      description: "The plugin declares httpRouter in deps and calls httpRouter.use(await createRouter({ logger }))"
+      type: file
+      source: validation/validate-plugin-mounts-router.sh
+      hint: "Add httpRouter: coreServices.httpRouter to deps, destructure it in init and call httpRouter.use(await createRouter({ logger })). A TODO comment does not count."
+    - name: module-public-import
+      description: "module.ts imports catalogProcessingExtensionPoint from @backstage/plugin-catalog-node"
+      type: file
+      source: validation/validate-module-public-import.sh
+      hint: "Delete the import from @backstage/plugin-catalog-backend/src/... and import catalogProcessingExtensionPoint from '@backstage/plugin-catalog-node'."
+    - name: module-uses-extension-point
+      description: "The module has catalog: catalogProcessingExtensionPoint in deps and calls catalog.addProcessor(new OutpostProcessor())"
+      type: file
+      source: validation/validate-module-uses-extension-point.sh
+      hint: "Add catalog: catalogProcessingExtensionPoint to deps, receive catalog in init and call catalog.addProcessor(new OutpostProcessor())."
+    - name: backend-adds-plugin
+      description: "index.ts has a real backend.add(import('@internal/plugin-scout-status-backend'));"
+      type: file
+      source: validation/validate-backend-adds-plugin.sh
+      hint: "Remove the // from the commented line, or add backend.add(import('@internal/plugin-scout-status-backend')); before backend.start()."
+    - name: backend-adds-module
+      description: "index.ts adds @internal/plugin-catalog-backend-module-outpost and still adds the catalog backend"
+      type: file
+      source: validation/validate-backend-adds-module.sh
+      hint: "Add backend.add(import('@internal/plugin-catalog-backend-module-outpost')); and keep the catalog backend line."
+    - name: backend-dependencies
+      description: "packages/backend/package.json lists both internal packages with workspace versions"
+      type: file
+      source: validation/validate-backend-dependencies.sh
+      hint: "Add \"@internal/plugin-scout-status-backend\": \"workspace:^\" and \"@internal/plugin-catalog-backend-module-outpost\": \"workspace:^\" to dependencies."
+
+teardown:
+  keepCluster: false

@@ -1,9 +1,8 @@
-# Reading-only content; YAML knowledge checks have a separate index.
+# Course manifest for ATS072: readings, playgrounds, graded labs, capstones and quizzes. Labs are built untested.
 training:
   id: ATS072
   title: 'CBA: Customizing Backstage'
-  description: 'Detailed reading material and reusable YAML knowledge checks for CBA: Customizing Backstage.
-    Technical content remains draft. No labs or playgrounds.'
+  description: 'Teaching material, playgrounds, graded labs, capstones and quizzes for CBA: Customizing Backstage. Labs run in qemu virtual machines and are built untested. Technical content remains draft.'
   certification:
     name: Certified Backstage Associate
     code: CBA
@@ -16,87 +15,479 @@ training:
     - Make changes to React code in Backstage App
     - Using Material UI components
 modules:
-- id: module-intro
-  title: Introduction
-  description: Audience, reading method and review process.
-  content:
-  - type: reading
+  - id: module-intro
     title: Introduction
-    path: sections/intro/README.md
-  - type: reading
-    title: Welcome To The Course
-    path: sections/intro/course-01-welcome.md
-  - type: reading
-    title: Get Your Machine Ready
-    path: sections/intro/course-02-get-your-machine-ready.md
-  - type: reading
-    title: How This Course Is Made
-    path: sections/intro/course-03-how-this-course-is-made.md
-- id: module-010
-  title: Understand frontend versus backend plugins
-  description: Developed reading and reasoning for Understand frontend versus backend plugins.
-  maturity: alpha
-  content:
-  - type: reading
-    title: Understand frontend versus backend plugins
-    path: sections/section-010/README.md
-  - type: reading
-    title: Frontend Plugins, Backend Plugins And Extension Systems
-    path: sections/section-010/module-01/course.md
-  - type: reading
-    title: Frontend Plugins, Backend Plugins And Extension Systems
-    path: sections/section-010/module-01/course-01-frontend-plugins-backend-plugins-and-extension-systems.md
-  - type: reading
-    title: Summary
-    path: sections/section-010/module-01/course-02-summary.md
-- id: module-020
-  title: Customizing Backstage plugins
-  description: Developed reading and reasoning for Customizing Backstage plugins.
-  maturity: alpha
-  content:
-  - type: reading
-    title: Customizing Backstage plugins
-    path: sections/section-020/README.md
-  - type: reading
-    title: Configuration, Overrides And Maintainable Plugin Customization
-    path: sections/section-020/module-01/course.md
-  - type: reading
-    title: Configuration, Overrides And Maintainable Plugin Customization
-    path: sections/section-020/module-01/course-01-configuration-overrides-and-maintainable-plugin-customization.md
-  - type: reading
-    title: Summary
-    path: sections/section-020/module-01/course-02-summary.md
-- id: module-030
-  title: Make changes to React code in Backstage App
-  description: Developed reading and reasoning for Make changes to React code in Backstage App.
-  maturity: alpha
-  content:
-  - type: reading
-    title: Make changes to React code in Backstage App
-    path: sections/section-030/README.md
-  - type: reading
-    title: React Composition, State And Asynchronous Catalog Features
-    path: sections/section-030/module-01/course.md
-  - type: reading
-    title: React Composition, State And Asynchronous Catalog Features
-    path: sections/section-030/module-01/course-01-react-composition-state-and-asynchronous-catalog-features.md
-  - type: reading
-    title: Summary
-    path: sections/section-030/module-01/course-02-summary.md
-- id: module-040
-  title: Using Material UI components
-  description: Developed reading and reasoning for Using Material UI components.
-  maturity: alpha
-  content:
-  - type: reading
-    title: Using Material UI components
-    path: sections/section-040/README.md
-  - type: reading
-    title: Compatible UI Components, Theme Context And Accessible States
-    path: sections/section-040/module-01/course.md
-  - type: reading
-    title: Compatible UI Components, Theme Context And Accessible States
-    path: sections/section-040/module-01/course-01-compatible-ui-components-theme-context-and-accessible-states.md
-  - type: reading
-    title: Summary
-    path: sections/section-040/module-01/course-02-summary.md
+    description: Audience, how to use playgrounds and labs, and review process.
+    content:
+      - type: reading
+        title: Introduction
+        path: sections/intro/README.md
+      - type: reading
+        title: Welcome To The Course
+        path: sections/intro/course-01-welcome.md
+      - type: reading
+        title: Get Your Machine Ready
+        path: sections/intro/course-02-get-your-machine-ready.md
+      - type: reading
+        title: How This Course Is Made
+        path: sections/intro/course-03-how-this-course-is-made.md
+
+  - id: module-010
+    title: "Understand frontend versus backend plugins"
+    description: >
+      Makes the reader able to tell frontend plugins from backend plugins and
+      to wire each into a Backstage app: plugin packages, routes and
+      extensions, registration in the app package, the new frontend system,
+      the new backend system, core services, extension points, backend
+      modules and architecture-version compatibility.
+    status: alpha
+    content:
+      - type: reading
+        title: "Understand frontend versus backend plugins"
+        path: sections/section-010/README.md
+
+      - type: reading
+        title: "Frontend Plugins And The Frontend System"
+        path: sections/section-010/module-01/course.md
+      - type: reading
+        title: "What A Frontend Plugin Package Contains"
+        path: sections/section-010/module-01/course-01-what-a-frontend-plugin-package-contains.md
+      - type: reading
+        title: "Registering A Plugin In The App Package"
+        path: sections/section-010/module-01/course-02-registering-a-plugin-in-the-app-package.md
+      - type: reading
+        title: "Question"
+        path: sections/section-010/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Register A Frontend Plugin In The App Lab"
+        path: sections/section-010/module-01/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: backstage-plugins
+        task_kind: fix
+        tags: [backstage, frontend-plugin, createPlugin, createRoutableExtension, flatroutes, app-package]
+        learning_goals:
+          - Export a routable extension from a frontend plugin with createRoutableExtension
+          - Add the plugin package as a dependency of the app package
+          - Import the page in App.tsx and add a route inside FlatRoutes
+        resources:
+          - name: "Structure of a plugin"
+            url: https://backstage.io/docs/plugins/structure-of-a-plugin
+          - name: "Backstage plugins overview"
+            url: https://backstage.io/docs/plugins/
+      - type: reading
+        title: "The New Frontend System: Plugins And Extensions"
+        path: sections/section-010/module-01/course-03-the-new-frontend-system.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-010/module-01/course-04-summary.md
+
+      - type: reading
+        title: "Backend Plugins, Modules, Services And Extension Points"
+        path: sections/section-010/module-02/course.md
+      - type: reading
+        title: "Backend Plugins And The New Backend System"
+        path: sections/section-010/module-02/course-01-backend-plugins-and-the-new-backend-system.md
+      - type: reading
+        title: "Core Services And Dependency Injection"
+        path: sections/section-010/module-02/course-02-core-services-and-dependency-injection.md
+      - type: reading
+        title: "Backend Modules, Extension Points And Compatibility"
+        path: sections/section-010/module-02/course-03-modules-extension-points-and-compatibility.md
+      - type: reading
+        title: "Question"
+        path: sections/section-010/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Install A Backend Plugin And A Module Lab"
+        path: sections/section-010/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 30m
+        topic: backstage-plugins
+        task_kind: fix
+        tags: [backstage, backend-plugin, createBackendPlugin, createBackendModule, coreServices, extension-point, backend-add]
+        learning_goals:
+          - Give a backend plugin the right plugin id and mount its router with the httpRouter service
+          - Use a public extension point from a backend module and add a processor
+          - Install the plugin and module with backend.add and add the package dependencies
+        resources:
+          - name: "Backend system architecture"
+            url: https://backstage.io/docs/backend-system/architecture/index
+          - name: "Backend modules"
+            url: https://backstage.io/docs/backend-system/architecture/modules
+          - name: "Extension points"
+            url: https://backstage.io/docs/backend-system/architecture/extension-points
+      - type: reading
+        title: "Summary"
+        path: sections/section-010/module-02/course-04-summary.md
+
+      - type: reading
+        title: "Question"
+        path: sections/section-010/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Capstone: Frontend And Backend Plugins"
+        path: sections/section-010/capstone/labs/lab-01
+        difficulty: advanced
+        estimated_duration: 45m
+        topic: backstage-plugins
+        task_kind: build
+        tags: [backstage, createFrontendPlugin, PageBlueprint, createBackendPlugin, extension-point, createBackendModule, rootConfig, secrets]
+        learning_goals:
+          - Rewrite a legacy frontend plugin for the new frontend system and register it in createApp features
+          - Register an extension point in a backend plugin and use it from a backend module
+          - Move a secret from source code to backend configuration and install the packages with backend.add
+        resources:
+          - name: "Frontend plugins"
+            url: https://backstage.io/docs/frontend-system/building-plugins/index
+          - name: "Backend plugins"
+            url: https://backstage.io/docs/backend-system/architecture/plugins
+          - name: "Core services"
+            url: https://backstage.io/docs/backend-system/core-services/index
+      - type: quiz
+        title: "Section Quiz"
+        path: sections/section-010/quiz.yaml
+        pass_score: 70
+
+  - id: module-020
+    title: "Customizing Backstage plugins"
+    description: >
+      Makes the reader able to change a Backstage plugin without forking it:
+      layered app-config files with environment substitution, a config.d.ts
+      schema with visibility tags, configuration read through
+      coreServices.rootConfig and configApiRef, backend modules that use
+      extension points, frontend extension overrides, permission policies
+      that follow the decision contract, and compatible upgrades with
+      backstage-cli versions:bump.
+
+    content:
+      - type: reading
+        title: "Customizing Backstage plugins"
+        path: sections/section-020/README.md
+
+      - type: reading
+        title: "Configuring Plugins With app-config.yaml"
+        path: sections/section-020/module-01/course.md
+      - type: reading
+        title: "How Backstage Loads And Layers Configuration"
+        path: sections/section-020/module-01/course-01-how-backstage-loads-and-layers-configuration.md
+      - type: reading
+        title: "Declaring A Configuration Schema In config.d.ts"
+        path: sections/section-020/module-01/course-02-declaring-a-configuration-schema-in-config-d-ts.md
+      - type: reading
+        title: "Reading Configuration In Backend And Frontend Plugins"
+        path: sections/section-020/module-01/course-03-reading-configuration-in-backend-and-frontend-plugins.md
+      - type: reading
+        title: "Question"
+        path: sections/section-020/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Configuring Plugins With app-config.yaml Lab"
+        path: sections/section-020/module-01/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 30m
+        topic: backstage-configuration
+        task_kind: fix
+        tags: [app-config, environment-substitution, config-d-ts, visibility, rootconfig, configapiref]
+        learning_goals:
+          - Read a secret and a URL from the environment with substitution
+          - Tag a configuration schema with secret and frontend visibility and register it in package.json
+          - Read configuration in a backend plugin through coreServices.rootConfig and keep the secret out of the browser
+        resources:
+          - name: "Writing configuration"
+            url: https://backstage.io/docs/conf/writing
+          - name: "Defining configuration for your plugin"
+            url: https://backstage.io/docs/conf/defining
+          - name: "Reading Backstage configuration"
+            url: https://backstage.io/docs/conf/reading
+      - type: reading
+        title: "Summary"
+        path: sections/section-020/module-01/course-04-summary.md
+
+      - type: reading
+        title: "Extending And Overriding Plugins Safely"
+        path: sections/section-020/module-02/course.md
+      - type: reading
+        title: "Extending Backend Plugins With Modules And Extension Points"
+        path: sections/section-020/module-02/course-01-extending-backend-plugins-with-modules-and-extension-points.md
+      - type: reading
+        title: "Overriding Frontend Extensions Without Forking"
+        path: sections/section-020/module-02/course-02-overriding-frontend-extensions-without-forking.md
+      - type: reading
+        title: "Permission Policies, Compatibility And Upgrades"
+        path: sections/section-020/module-02/course-03-permission-policies-compatibility-and-upgrades.md
+      - type: reading
+        title: "Question"
+        path: sections/section-020/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Extending And Overriding Plugins Safely Lab"
+        path: sections/section-020/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 40m
+        topic: backstage-extension
+        task_kind: fix
+        tags: [backend-module, extension-point, permission-policy, app-extensions, versions-bump]
+        learning_goals:
+          - Write and register a catalog backend module with createBackendModule
+          - Write a permission policy that denies by default and register it
+          - Configure a frontend extension path and align @backstage package versions
+        resources:
+          - name: "Backend plugins and modules"
+            url: https://backstage.io/docs/backend-system/building-plugins-and-modules/index
+          - name: "Writing a permission policy"
+            url: https://backstage.io/docs/permissions/writing-a-policy
+          - name: "Configuring extensions"
+            url: https://backstage.io/docs/frontend-system/building-apps/configuring-extensions
+          - name: "Keeping Backstage updated"
+            url: https://backstage.io/docs/getting-started/keeping-backstage-updated
+      - type: reading
+        title: "Summary"
+        path: sections/section-020/module-02/course-04-summary.md
+
+      - type: reading
+        title: "Question"
+        path: sections/section-020/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Customizing Backstage Plugins Capstone"
+        path: sections/section-020/capstone/labs/lab-01
+        difficulty: advanced
+        estimated_duration: 60m
+        topic: backstage-customization
+        task_kind: build
+        tags: [app-config, config-d-ts, rootconfig, backend-module, permission-policy, app-extensions]
+        learning_goals:
+          - Layer configuration files and keep secrets out of committed files
+          - Register a schema and read configuration through rootConfig in a plugin and a module
+          - Register a catalog module and a deny-by-default permission policy and move a page with app.extensions
+        resources:
+          - name: "Writing configuration"
+            url: https://backstage.io/docs/conf/writing
+          - name: "Defining configuration for your plugin"
+            url: https://backstage.io/docs/conf/defining
+          - name: "Writing a permission policy"
+            url: https://backstage.io/docs/permissions/writing-a-policy
+      - type: quiz
+        title: "Knowledge Check: Customizing Backstage plugins"
+        path: sections/section-020/quiz.yaml
+        pass_score: 70
+
+  - id: module-030
+    title: "Make changes to React code in Backstage App"
+    description: >
+      Makes the reader able to change the React code of a Backstage app:
+      function components with typed props, state and effects, routes and
+      sidebar entries, and asynchronous catalog data with useApi, useAsync,
+      Progress and ResponseErrorPanel, stable keys and accessible output.
+    status: alpha
+    content:
+      - type: reading
+        title: "Make changes to React code in Backstage App"
+        path: sections/section-030/README.md
+      - type: reading
+        title: "React Components, Props And Hooks In A Backstage App"
+        path: sections/section-030/module-01/course.md
+      - type: reading
+        title: "JSX, Function Components And Props"
+        path: sections/section-030/module-01/course-01-jsx-function-components-and-props.md
+      - type: reading
+        title: "State And Effects With Hooks"
+        path: sections/section-030/module-01/course-02-state-and-effects-with-hooks.md
+      - type: reading
+        title: "Composing Pages In App.tsx, Routes And The Sidebar"
+        path: sections/section-030/module-01/course-03-composing-routes-and-sidebar.md
+      - type: reading
+        title: "Question"
+        path: sections/section-030/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "React Components, Props And Hooks Lab"
+        path: sections/section-030/module-01/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: react
+        task_kind: fix
+        tags: [react, jsx, props, usestate, useeffect, routes, sidebar]
+        learning_goals:
+          - Register a plugin page with a Route in FlatRoutes and a SidebarItem
+          - Type optional props and show an explicit text for a missing value
+          - Give an effect the dependency array that matches the values it reads
+        resources:
+          - name: "Backstage frontend plugin development"
+            url: https://backstage.io/docs/plugins/structure-of-a-plugin/
+          - name: "Backstage app routing"
+            url: https://backstage.io/docs/plugins/composability/
+      - type: reading
+        title: "Summary"
+        path: sections/section-030/module-01/course-04-summary.md
+      - type: reading
+        title: "Asynchronous Catalog Data In React"
+        path: sections/section-030/module-02/course.md
+      - type: reading
+        title: "Reading Catalog Data With useApi And catalogApiRef"
+        path: sections/section-030/module-02/course-01-reading-catalog-data-with-useapi.md
+      - type: reading
+        title: "Loading, Empty, Success And Error States"
+        path: sections/section-030/module-02/course-02-loading-empty-success-and-error-states.md
+      - type: reading
+        title: "Stable Keys And Accessible Output"
+        path: sections/section-030/module-02/course-03-stable-keys-and-accessible-output.md
+      - type: reading
+        title: "Question"
+        path: sections/section-030/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Asynchronous Catalog Data Lab"
+        path: sections/section-030/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 30m
+        topic: react
+        task_kind: fix
+        tags: [react, useapi, catalogapiref, useasync, progress, responseerrorpanel, keys, aria]
+        learning_goals:
+          - Replace a fetch call in render with useApi(catalogApiRef) and useAsync
+          - Render loading, error, empty and success states with Backstage components
+          - Use stable keys from the entity reference and add a live region and list label
+        resources:
+          - name: "Backstage Utility APIs"
+            url: https://backstage.io/docs/api/utility-apis/
+          - name: "Backstage core components"
+            url: https://backstage.io/storybook/
+      - type: reading
+        title: "Summary"
+        path: sections/section-030/module-02/course-04-summary.md
+      - type: reading
+        title: "Question"
+        path: sections/section-030/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "React Changes In A Backstage App Capstone"
+        path: sections/section-030/capstone/labs/lab-01
+        difficulty: advanced
+        estimated_duration: 40m
+        topic: react
+        task_kind: build
+        tags: [react, routes, sidebar, useapi, useasync, keys, optional-props, aria]
+        learning_goals:
+          - Route and link a new page in the app
+          - Load catalog data with useApi and useAsync and render every request state
+          - Type the owner as optional, key rows by entity reference and add a live region
+        resources:
+          - name: "Backstage Utility APIs"
+            url: https://backstage.io/docs/api/utility-apis/
+          - name: "Backstage frontend plugin development"
+            url: https://backstage.io/docs/plugins/structure-of-a-plugin/
+      - type: quiz
+        title: "Knowledge Check: Make changes to React code in Backstage App"
+        path: sections/section-030/quiz.yaml
+        pass_score: 70
+
+  - id: module-040
+    title: "Using Material UI components"
+    description: >
+      Makes the reader able to choose the right Material UI generation for a
+      Backstage plugin, build pages with Grid, Typography, Button and InfoCard,
+      create and register a theme, use theme tokens and present status,
+      loading, error and empty states accessibly.
+    content:
+      - type: reading
+        title: "Section Overview"
+        path: sections/section-040/README.md
+      - type: reading
+        title: "Material UI Components In Backstage"
+        path: sections/section-040/module-01/course.md
+      - type: reading
+        title: "Material UI Versions And Import Paths"
+        path: sections/section-040/module-01/course-01-material-ui-versions-and-import-paths.md
+      - type: reading
+        title: "Layout And Content Components: Grid, Typography, Button And Card"
+        path: sections/section-040/module-01/course-02-grid-typography-button-and-card.md
+      - type: reading
+        title: "Styling With makeStyles And styled"
+        path: sections/section-040/module-01/course-03-styling-with-makestyles-and-styled.md
+      - type: reading
+        title: "Question"
+        path: sections/section-040/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Material UI Components In Backstage Lab"
+        path: sections/section-040/module-01/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: backstage-ui
+        task_kind: fix
+        tags: [backstage, material-ui, mui-v4, imports, grid, infocard]
+        learning_goals:
+          - Replace Material UI v5 imports with the declared v4 package in a plugin
+          - Use InfoCard from @backstage/core-components and a v4 Grid layout
+          - Keep theme.spacing in makeStyles and remove the v5 sx prop
+        resources:
+          - name: "Backstage core-components"
+            url: https://backstage.io/docs/getting-started/
+          - name: "Material UI v4 documentation"
+            url: https://v4.mui.com/
+          - name: "Material UI documentation"
+            url: https://mui.com/material-ui/
+      - type: reading
+        title: "Summary"
+        path: sections/section-040/module-01/course-04-summary.md
+      - type: reading
+        title: "Themes, Layout And Accessible Status States"
+        path: sections/section-040/module-02/course.md
+      - type: reading
+        title: "Creating And Registering A Theme"
+        path: sections/section-040/module-02/course-01-creating-and-registering-a-theme.md
+      - type: reading
+        title: "Theme Tokens And Semantic Controls"
+        path: sections/section-040/module-02/course-02-theme-tokens-and-semantic-controls.md
+      - type: reading
+        title: "Accessible Status And Loading States"
+        path: sections/section-040/module-02/course-03-accessible-status-and-loading-states.md
+      - type: reading
+        title: "Question"
+        path: sections/section-040/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Themes, Layout And Accessible Status States Lab"
+        path: sections/section-040/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 30m
+        topic: backstage-ui
+        task_kind: fix
+        tags: [backstage, theme, createUnifiedTheme, accessibility, status]
+        learning_goals:
+          - Create a theme with createUnifiedTheme and register it with UnifiedThemeProvider in createApp
+          - Replace hard-coded colors with theme tokens
+          - Show status with text and label an icon-only button
+        resources:
+          - name: "Backstage app themes"
+            url: https://backstage.io/docs/conf/user-interface/
+          - name: "Backstage core-components"
+            url: https://backstage.io/docs/getting-started/
+      - type: reading
+        title: "Summary"
+        path: sections/section-040/module-02/course-04-summary.md
+      - type: reading
+        title: "Question"
+        path: sections/section-040/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Using Material UI Components Capstone"
+        path: sections/section-040/capstone/labs/lab-01
+        difficulty: advanced
+        estimated_duration: 40m
+        topic: backstage-ui
+        task_kind: build
+        tags: [backstage, material-ui, theme, accessibility, status, capstone]
+        learning_goals:
+          - Align one Material UI generation across an app and a plugin
+          - Register a unified theme and replace colour literals with theme tokens
+          - Present loading, error, empty and status states with text labels
+        resources:
+          - name: "Backstage user interface customization"
+            url: https://backstage.io/docs/conf/user-interface/
+          - name: "Material UI documentation"
+            url: https://mui.com/material-ui/
+      - type: quiz
+        title: "Using Material UI components Quiz"
+        path: sections/section-040/quiz.yaml
+        pass_score: 70
+
+  - id: module-final
+    title: "Final Knowledge Check"
+    description: Questions across all four sections.
+    content:
+      - type: quiz
+        title: "Final Knowledge Check: Customizing Backstage"
+        path: sections/final-domain-quiz.yaml
+        pass_score: 70

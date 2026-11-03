@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Configuring Plugins With app-config.yaml (PLAYGROUND). A clean environment, no task, no grading. UNTESTED.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-072-playground-020-01
+  docs:
+    guide: docs/overview.md
+
+runtime:
+  type: "qemu"
+  qemu:
+    - image:
+        type: "oci"
+        source: "ghcr.io/astrona-io/ubuntu-qcow2-image:24.04-lfcs-{ARCH}"
+      cpus: 2
+      memoryMB: 2048
+      diskSizeGB: 15
+      display: false
+
+bootstrap:
+  init:
+    - name: prepare
+      description: "Create the scout-status repository in /home/candidate/backstage-app"
+      type: folder
+      source: bootstrap/
+
+teardown:
+  keepCluster: false

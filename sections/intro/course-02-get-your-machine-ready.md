@@ -1,7 +1,7 @@
 # Get Your Machine Ready
 
-A Markdown reader or the Astrona reading interface is sufficient. Mermaid diagrams describe relationships also explained in the surrounding text.
+Read the pages in the Astrona interface. Mermaid diagrams describe relationships also explained in the surrounding text.
 
-No cluster, cloud account, container runtime or installed CLI is required. Resource excerpts and query expressions illustrate contracts; they are not exercises asking you to deploy or execute anything. No labs or playgrounds are included.
+Playgrounds and labs run in a virtual machine started by the `astrona` command-line tool, so install `astrona` and a machine that can run qemu virtual machines. Start a playground with `astrona run`, open a terminal in it with `astrona ssh`, and submit a lab for grading with `astrona submit`. If a start fails, run `astrona doctor` and read what it reports.
 
 Keep notes on unfamiliar terms and explain why each practice answer follows from the teaching. If a page cannot be read, report its title and visible problem so maintainers can identify it.

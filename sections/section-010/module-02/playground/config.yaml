@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Backend Plugins, Modules, Services And Extension Points (PLAYGROUND). A clean virtual machine with a small Backstage-style
+# project. No task, no grading, no `astrona submit`. Built untested.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-072-playground-010-02
+  docs:
+    guide: docs/overview.md
+
+runtime:
+  type: "qemu"
+  qemu:
+    - image:
+        type: "oci"
+        source: "ghcr.io/astrona-io/ubuntu-qcow2-image:24.04-lfcs-{ARCH}"
+      cpus: 2
+      memoryMB: 2048
+      diskSizeGB: 15
+      display: false
+
+bootstrap:
+  init:
+    - name: seed-project
+      description: Write the example project to /home/candidate/backstage-app
+      type: file
+      source: bootstrap/prepare.sh
+
+teardown:
+  keepCluster: false

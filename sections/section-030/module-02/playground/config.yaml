@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Asynchronous Catalog Data In React (PLAYGROUND): a clean ungraded virtual machine with the example
+# Backstage app. No task, no grading. Built untested.
+apiVersion: astrona.io/v1
+metadata:
+  name: "ats-072-playground-030-02"
+  docs:
+    guide: "docs/overview.md"
+
+runtime:
+  type: "qemu"
+  qemu:
+  - image:
+      type: "oci"
+      source: "ghcr.io/astrona-io/ubuntu-qcow2-image:24.04-lfcs-{ARCH}"
+    cpus: 2
+    memoryMB: 2048
+    diskSizeGB: 15
+    display: false
+
+bootstrap:
+  init:
+    - name: "prepare-backstage-app"
+      description: "Write the example Backstage app for Asynchronous Catalog Data In React"
+      type: "file"
+      source: "bootstrap/prepare.sh"
+
+teardown:
+  keepCluster: false

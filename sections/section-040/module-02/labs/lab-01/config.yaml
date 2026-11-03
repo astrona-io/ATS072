@@ -1,0 +1,71 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Themes, Layout And Accessible Status States (LAB). Built untested: only astrona validate, bash -n and YAML parsing were run.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-072-lab-040-02
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: "qemu"
+  qemu:
+    - image:
+        type: "oci"
+        source: "ghcr.io/astrona-io/ubuntu-qcow2-image:24.04-lfcs-{ARCH}"
+      cpus: 2
+      memoryMB: 2048
+      diskSizeGB: 15
+      display: false
+
+bootstrap:
+  init:
+    - name: "seed-backstage-app"
+      description: "Writes the scout-status Backstage-style project to /home/candidate/backstage-app"
+      type: "folder"
+      source: "bootstrap/"
+
+testing:
+  init:
+    - name: apply-solution
+      description: "Apply the reference solution"
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: theme-created
+      description: "scoutTheme is created with createUnifiedTheme from the light palettes"
+      type: file
+      source: validation/validate-theme-created.sh
+      hint: "Export scoutTheme = createUnifiedTheme({ palette: { ...palettes.light, primary: { main: \"#1f6feb\" } }, defaultPageTheme: \"home\" })."
+    - name: theme-registered
+      description: "App.tsx registers scoutTheme through UnifiedThemeProvider in createApp"
+      type: file
+      source: validation/validate-theme-registered.sh
+      hint: "Pass themes: [{ id, title, variant: \"light\", Provider }] to createApp and render <UnifiedThemeProvider theme={scoutTheme} children={children} />."
+    - name: status-has-text
+      description: "StatusOK, StatusWarning and StatusError each carry a text label"
+      type: file
+      source: validation/validate-status-has-text.sh
+      hint: "Render <StatusOK>{name} is operational</StatusOK> and similar, imported from @backstage/core-components."
+    - name: no-hard-coded-colours
+      description: "No hex, rgb or hsl colour in the plugin source"
+      type: file
+      source: validation/validate-no-hard-coded-colours.sh
+      hint: "Search with: grep -rnE \"#[0-9a-fA-F]{3,8}\" plugins. Remove every match."
+    - name: panel-uses-theme-tokens
+      description: "ScoutPanel takes colours and spacing from the theme"
+      type: file
+      source: validation/validate-panel-uses-theme-tokens.sh
+      hint: "Use makeStyles(theme => ({ ... })) with theme.palette.divider, theme.palette.text.primary and theme.spacing()."
+    - name: icon-button-has-label
+      description: "Every IconButton has an aria-label"
+      type: file
+      source: validation/validate-icon-button-has-label.sh
+      hint: "Add aria-label=\"Refresh scout status\" to the IconButton in ScoutToolbar.tsx."
+
+teardown:
+  keepCluster: false

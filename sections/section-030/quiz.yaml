@@ -1,0 +1,357 @@
+# Knowledge check for section 030. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats072-030
+course_id: ATS072
+exam_code: CBA
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: section
+  id: section-030
+  title: Make changes to React code in Backstage App
+questions:
+- id: ats072-030-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Write a function component that takes typed props
+  source_readings:
+  - sections/section-030/module-01/course-01-jsx-function-components-and-props.md
+  prompt: The `OutpostCard` in the `scout-status` plugin always shows `outpost-alpha`.
+    The `ScoutStatusPage` must show a different outpost name for each card. What is
+    the correct change?
+  options:
+  - id: a
+    text: Create a global variable that the page sets before it renders the card.
+    explanation: The card would read shared mutable state instead of props, and two
+      cards on one page would show the same value.
+  - id: b
+    text: Call `fetch` inside the card to ask the page which name to use.
+    explanation: A child does not request its props from the parent; the parent passes
+      them in the JSX.
+  - id: c
+    text: 'Declare an `OutpostCardProps` interface with `name: string`, destructure
+      `name` in the card and pass `name="..."` from the page.'
+    explanation: Correct. A parent passes data to a child as props, and the interface
+      lets the compiler check the callers.
+  - id: d
+    text: Write the component name in lowercase so that React reads the props.
+    explanation: A lowercase name makes React treat the tag as an HTML element, so
+      the function is never called.
+  correct_option: c
+  explanation: Props carry data from parent to child, and an interface types them.
+- id: ats072-030-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Handle an optional prop without an assertion
+  source_readings:
+  - sections/section-030/module-01/course-01-jsx-function-components-and-props.md
+  prompt: "`OutpostCardProps` declares `crew?: number`. Some outposts have no recorded
+    crew. Which render is correct?"
+  options:
+  - id: a
+    text: "`<p>{crew === undefined ? 'Crew not recorded' : `Crew: ${crew}`}</p>`"
+    explanation: Correct. The component handles the missing value with an explicit
+      text.
+  - id: b
+    text: "`<p>Crew: {crew!}</p>`"
+    explanation: The non-null assertion only silences the compiler. When `crew` is
+      missing, the card shows nothing useful.
+  - id: c
+    text: "`<p>Crew: {crew as number}</p>`"
+    explanation: The `as` assertion changes only the compiler's view, not the data.
+  - id: d
+    text: "`<p>Crew: 0</p>` for every outpost."
+    explanation: A fixed zero states a fact that the data does not support.
+  correct_option: a
+  explanation: An optional prop is handled in the render with a clear text for the
+    missing case.
+- id: ats072-030-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain what a render function may and may not do
+  source_readings:
+  - sections/section-030/module-01/course-01-jsx-function-components-and-props.md
+  prompt: A developer puts `sendAuditRequest(name)` directly in the body of `OutpostCard`.
+    The audit service later receives many duplicate requests for one page view. What
+    is the cause?
+  options:
+  - id: a
+    text: The `name` prop is optional, so React retries.
+    explanation: Props do not trigger retries.
+  - id: b
+    text: JSX converts every element into a request.
+    explanation: JSX elements become function calls that describe the page, not network
+      requests.
+  - id: c
+    text: Function components run only once, so the audit service is wrong.
+    explanation: A function component can run again after every state or prop change.
+  - id: d
+    text: React calls the function component each time it needs a new description,
+      so the request runs on every render.
+    explanation: Correct. The body of a component can run many times, so outside actions
+      belong in an effect.
+  correct_option: d
+  explanation: The body of a component is a calculation that React can repeat.
+- id: ats072-030-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Choose the dependency array of an effect
+  source_readings:
+  - sections/section-030/module-01/course-02-state-and-effects-with-hooks.md
+  prompt: "`CrewCounter` runs `document.title = `${outpost}: ${count} on duty`` in
+    an effect. Which second argument is correct?"
+  options:
+  - id: a
+    text: No second argument.
+    explanation: The effect then runs after every render. It works, but it does not
+      state what the effect depends on.
+  - id: b
+    text: "`[outpost, count]`"
+    explanation: Correct. The array lists every prop and state value that the effect
+      reads.
+  - id: c
+    text: "`[]`"
+    explanation: The effect would run once, so the title would keep the first outpost
+      and count.
+  - id: d
+    text: "`[document.title]`"
+    explanation: The title is what the effect writes, not a value it reads from the
+      component.
+  correct_option: b
+  explanation: A dependency array lists every component value that the effect reads.
+- id: ats072-030-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Spot a stale value caused by a missing dependency
+  source_readings:
+  - sections/section-030/module-01/course-02-state-and-effects-with-hooks.md
+  prompt: After a change, the browser tab title shows the new count but still shows
+    the old outpost name when the parent passes a new `outpost`. The effect uses `[count]`.
+    What is wrong?
+  options:
+  - id: a
+    text: "`useState` cannot hold a number."
+    explanation: "`useState` holds any value, including a number."
+  - id: b
+    text: The effect must return a cleanup function.
+    explanation: A cleanup is for timers and subscriptions, not for a title that is
+      set again.
+  - id: c
+    text: "`outpost` is read by the effect but missing from the array, so the effect
+      uses a stale value."
+    explanation: Correct. A value the effect reads must be in the array.
+  - id: d
+    text: The effect runs before the render.
+    explanation: An effect runs after React has updated the page.
+  correct_option: c
+  explanation: Missing dependencies cause stale values.
+- id: ats072-030-q06
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Apply the rules of hooks
+  source_readings:
+  - sections/section-030/module-01/course-02-state-and-effects-with-hooks.md
+  prompt: A developer writes `if (outpost) { const [count, setCount] = useState(0);
+    }`. Why is this a problem?
+  options:
+  - id: a
+    text: "`useState` needs two arguments."
+    explanation: "`useState` takes one initial value."
+  - id: b
+    text: "`useState` cannot be used with a string prop."
+    explanation: The type of the prop does not matter.
+  - id: c
+    text: Hooks can only be used in `.ts` files.
+    explanation: Hooks in components live in `.tsx` files; the issue is the condition.
+  - id: d
+    text: React identifies hook values by call order, and a hook inside a condition
+      changes that order between renders.
+    explanation: Correct. Hooks must be called at the top level in the same order
+      on every render.
+  correct_option: d
+  explanation: Hooks are called at the top level in a stable order.
+- id: ats072-030-q07
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Register a page in the app
+  source_readings:
+  - sections/section-030/module-01/course-03-composing-routes-and-sidebar.md
+  prompt: The `ScoutStatusPage` is exported by `@internal/plugin-scout-status`. Which
+    change makes the address `/scout-status` show the page in the legacy frontend
+    app?
+  options:
+  - id: a
+    text: Import the page in `App.tsx` and add `<Route path="/scout-status" element={<ScoutStatusPage
+      />} />` inside `FlatRoutes`.
+    explanation: Correct. The route maps the address to the element.
+  - id: b
+    text: Add a `SidebarItem` with `to="scout-status"` only.
+    explanation: A sidebar item only links to an address. Without a route nothing
+      matches it.
+  - id: c
+    text: Add the page to `app-config.yaml` under `catalog.locations`.
+    explanation: Catalog locations register entities, not pages.
+  - id: d
+    text: Rename the component folder to `scout-status`.
+    explanation: Folder names do not create routes.
+  correct_option: a
+  explanation: A route in `FlatRoutes` makes the address work.
+- id: ats072-030-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Diagnose a page that does not appear
+  source_readings:
+  - sections/section-030/module-01/course-03-composing-routes-and-sidebar.md
+  prompt: A developer adds the import and the route for `SupplyPage` in `App.tsx`,
+    but the build reports that `SupplyPage` is not exported by `@internal/plugin-scout-status`.
+    What is missing?
+  options:
+  - id: a
+    text: A second `Route` with the same path.
+    explanation: Duplicate routes would not fix a missing export.
+  - id: b
+    text: An export of `SupplyPage` in `plugins/scout-status/src/index.ts`.
+    explanation: Correct. The plugin's `index.ts` decides what the package exports.
+  - id: c
+    text: A `SidebarGroup`.
+    explanation: A sidebar group is layout and does not affect imports.
+  - id: d
+    text: A new `package.json` in `packages/app`.
+    explanation: The app already depends on the plugin workspace package.
+  correct_option: b
+  explanation: The import path resolves through the package export.
+- id: ats072-030-q09
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Get the catalog client with useApi
+  source_readings:
+  - sections/section-030/module-02/course-01-reading-catalog-data-with-useapi.md
+  prompt: A card must read catalog entities. Which approach follows Backstage practice?
+  options:
+  - id: a
+    text: Call `fetch('http://localhost:7007/api/catalog/entities')` in the render
+      body.
+    explanation: The address is fixed, there is no token, and the call repeats on
+      each render.
+  - id: b
+    text: Import the backend plugin into the component.
+    explanation: Backend plugins do not run in the browser.
+  - id: c
+    text: Read the entities from `app-config.yaml` with `process.env`.
+    explanation: The catalog entities are stored by the catalog backend, not in browser
+      environment values.
+  - id: d
+    text: Call `useApi(catalogApiRef)` to get the catalog client and call `getEntities`
+      in an async function.
+    explanation: Correct. The app provides the client with the right base URL and
+      authentication.
+  correct_option: d
+  explanation: "`useApi` returns the Utility API behind an `ApiRef`."
+- id: ats072-030-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Run an asynchronous request with useAsync
+  source_readings:
+  - sections/section-030/module-02/course-02-loading-empty-success-and-error-states.md
+  prompt: Which `useAsync` call loads outposts once and reruns only when the catalog
+    client changes?
+  options:
+  - id: a
+    text: "`useAsync(async () => { ... })` with no array and `setState` inside."
+    explanation: Without the dependency array the intent is unclear, and the state
+      update adds work.
+  - id: b
+    text: "`useAsync(catalogApi.getEntities, [])` with `await` in the component body."
+    explanation: A component body cannot use `await`, and the call would lose its
+      arguments.
+  - id: c
+    text: "`useAsync(async () => { const r = await catalogApi.getEntities({ filter
+      }); return r.items; }, [catalogApi])`"
+    explanation: Correct. The callback returns the items, and the array lists what
+      it reads.
+  - id: d
+    text: "`useEffect(async () => { ... }, [])` returning the promise."
+    explanation: An effect function must not return a promise; React expects nothing
+      or a cleanup function.
+  correct_option: c
+  explanation: The callback is async, returns the value and the array lists its inputs.
+- id: ats072-030-q11
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Separate loading, empty, success and error states
+  source_readings:
+  - sections/section-030/module-02/course-02-loading-empty-success-and-error-states.md
+  prompt: The catalog request fails with a network error. The card shows `No outposts
+    found in the catalog.` What is the mistake?
+  options:
+  - id: a
+    text: The failure is treated as an empty result, so the user concludes that no
+      outposts exist.
+    explanation: Correct. An error needs its own state, such as `ResponseErrorPanel
+      error={error}`.
+  - id: b
+    text: The empty message must appear while `loading` is true.
+    explanation: The empty message belongs only to a successful request that returned
+      no items.
+  - id: c
+    text: "`Progress` should be shown after an error."
+    explanation: "`Progress` shows waiting, and an error is a finished state."
+  - id: d
+    text: "`value` should be set to `null` after an error."
+    explanation: The state is set by `useAsync`, and the card must show the error.
+  correct_option: a
+  explanation: An error must never be shown as an empty result.
+- id: ats072-030-q12
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Choose stable keys and honest optional types
+  source_readings:
+  - sections/section-030/module-02/course-03-stable-keys-and-accessible-output.md
+  prompt: A list of catalog entities uses `key={index}`. Rows contain a text field.
+    A new outpost is added at the top and the typed text appears in the wrong row.
+    Which change fixes this and treats `spec.owner` correctly?
+  options:
+  - id: a
+    text: Use `key={Math.random()}` and write `owner={entity.spec?.owner as string}`.
+    explanation: A random key recreates every row on every render, and the assertion
+      hides a missing owner.
+  - id: b
+    text: 'Use `key={entity.metadata.title}` and require `owner: string`.'
+    explanation: A title can be missing or change, and a required owner contradicts
+      the data.
+  - id: c
+    text: 'Use `key={stringifyEntityRef(entity)}` and pass `owner` only when `typeof
+      entity.spec?.owner === ''string''`, with `owner?: string` on the row.'
+    explanation: Correct. The key is unique and stable, and the optional type is honest.
+  - id: d
+    text: Keep `key={index}` and sort the list by name.
+    explanation: Sorting does not make the position a stable identity.
+  correct_option: c
+  explanation: Keys come from stable identity and optional data stays optional.
+- id: ats072-030-q13
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Make loading and error states accessible
+  source_readings:
+  - sections/section-030/module-02/course-03-stable-keys-and-accessible-output.md
+  prompt: Screen reader users do not hear the switch from the progress bar to the
+    list. What change helps most?
+  options:
+  - id: a
+    text: Show a green dot for success and a red dot for failure.
+    explanation: Color alone does not reach people who cannot see it.
+  - id: b
+    text: Wrap all states in an element with `aria-live="polite"` and give the `ul`
+      an `aria-label`.
+    explanation: Correct. The live region exists before the content changes, and the
+      list has a name.
+  - id: c
+    text: Hide the list with CSS while loading.
+    explanation: Hiding does not announce the change.
+  - id: d
+    text: Remove `Progress` and show nothing while loading.
+    explanation: Silence gives the user no information.
+  correct_option: b
+  explanation: A live region announces changes to assistive technology.

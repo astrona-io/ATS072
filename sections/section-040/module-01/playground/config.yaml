@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Material UI Components In Backstage Playground (PLAYGROUND). Built untested: only astrona validate, bash -n and YAML parsing were run.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-072-playground-040-01
+  docs:
+    guide: docs/overview.md
+
+runtime:
+  type: "qemu"
+  qemu:
+    - image:
+        type: "oci"
+        source: "ghcr.io/astrona-io/ubuntu-qcow2-image:24.04-lfcs-{ARCH}"
+      cpus: 2
+      memoryMB: 2048
+      diskSizeGB: 15
+      display: false
+
+bootstrap:
+  init:
+    - name: "seed-backstage-app"
+      description: "Writes the scout-status Backstage-style project to /home/candidate/backstage-app"
+      type: "folder"
+      source: "bootstrap/"
+
+teardown:
+  keepCluster: false

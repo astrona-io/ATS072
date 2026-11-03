@@ -1,0 +1,73 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Register A Frontend Plugin In The App
+# Built untested: only `astrona validate`, `bash -n` and YAML parsing have been run.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-072-lab-010-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: "qemu"
+  qemu:
+    - image:
+        type: "oci"
+        source: "ghcr.io/astrona-io/ubuntu-qcow2-image:24.04-lfcs-{ARCH}"
+      cpus: 2
+      memoryMB: 2048
+      diskSizeGB: 15
+      display: false
+
+bootstrap:
+  init:
+    - name: seed-project
+      description: "Write the Backstage-style project with the scout-status plugin not yet registered"
+      type: file
+      source: bootstrap/01-setup.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: routable-extension
+      description: "plugin.ts exports ScoutStatusPage built with createRoutableExtension and the root route"
+      type: file
+      source: validation/validate-routable-extension.sh
+      hint: "Import createRoutableExtension, then export ScoutStatusPage from scoutStatusPlugin.provide(createRoutableExtension({ name, component, mountPoint: rootRouteRef })). Load the component with a lazy import."
+    - name: plugin-index-exports
+      description: "index.ts exports scoutStatusPlugin and ScoutStatusPage"
+      type: file
+      source: validation/validate-plugin-index-exports.sh
+      hint: "Add ScoutStatusPage to the export list in plugins/scout-status/src/index.ts."
+    - name: app-dependency
+      description: "packages/app/package.json depends on @internal/plugin-scout-status through the workspace"
+      type: file
+      source: validation/validate-app-dependency.sh
+      hint: "Add \"@internal/plugin-scout-status\": \"workspace:^\" to dependencies in packages/app/package.json. Keep the JSON valid."
+    - name: app-import
+      description: "App.tsx imports ScoutStatusPage from @internal/plugin-scout-status"
+      type: file
+      source: validation/validate-app-import.sh
+      hint: "Add import { ScoutStatusPage } from '@internal/plugin-scout-status'; next to the other imports in packages/app/src/App.tsx."
+    - name: app-route
+      description: "App.tsx has a /scout-status route inside FlatRoutes that renders ScoutStatusPage"
+      type: file
+      source: validation/validate-app-route.sh
+      hint: "Inside <FlatRoutes>, add a real Route element (not a comment) with path=\"/scout-status\" and element={<ScoutStatusPage />}."
+    - name: plugin-identity-kept
+      description: "The plugin id and root route are unchanged and the catalog route is still in App.tsx"
+      type: file
+      source: validation/validate-plugin-identity-kept.sh
+      hint: "Do not rename the plugin id and do not remove the existing routes. Only add what is missing."
+
+teardown:
+  keepCluster: false

@@ -1,0 +1,72 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Configuring Plugins With app-config.yaml (LAB). Graded by static checks on files in /home/candidate/backstage-app. UNTESTED.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-072-lab-020-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: "qemu"
+  qemu:
+    - image:
+        type: "oci"
+        source: "ghcr.io/astrona-io/ubuntu-qcow2-image:24.04-lfcs-{ARCH}"
+      cpus: 2
+      memoryMB: 2048
+      diskSizeGB: 15
+      display: false
+
+bootstrap:
+  init:
+    - name: seed-repository
+      description: "Create the scout-status repository with the configuration mistakes"
+      type: folder
+      source: bootstrap/
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: token-from-environment
+      description: "apiToken in app-config.yaml comes from the SCOUT_API_TOKEN variable"
+      type: file
+      source: validation/validate-token-from-environment.sh
+      hint: "Replace the literal value with ${SCOUT_API_TOKEN}. A secret has no default."
+    - name: url-has-default
+      description: "apiUrl uses ${SCOUT_API_URL:-default}"
+      type: file
+      source: validation/validate-url-has-default.sh
+      hint: "Use ${NAME:-default} so a start without the variable still works."
+    - name: schema-visibility
+      description: "config.d.ts tags apiToken secret and refreshSeconds and title frontend"
+      type: file
+      source: validation/validate-schema-visibility.sh
+      hint: "Add @visibility inside the JSDoc comment directly above each key."
+    - name: package-registers-schema
+      description: "package.json has configSchema and lists config.d.ts in files"
+      type: file
+      source: validation/validate-package-registers-schema.sh
+      hint: "Add the field configSchema with the value config.d.ts, and add config.d.ts to the files array."
+    - name: backend-uses-rootconfig
+      description: "the backend plugin reads config through coreServices.rootConfig"
+      type: file
+      source: validation/validate-backend-uses-rootconfig.sh
+      hint: "Add config: coreServices.rootConfig to deps and read the keys with getString and getOptionalNumber. Remove process.env."
+    - name: frontend-reads-no-secret
+      description: "the card does not read the secret token"
+      type: file
+      source: validation/validate-frontend-reads-no-secret.sh
+      hint: "The browser cannot read secret keys. Remove the apiToken line from the card."
+
+teardown:
+  keepCluster: false

@@ -1,0 +1,77 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Extending And Overriding Plugins Safely (LAB). Graded by static checks on files in /home/candidate/backstage-app. UNTESTED.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-072-lab-020-02
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: "qemu"
+  qemu:
+    - image:
+        type: "oci"
+        source: "ghcr.io/astrona-io/ubuntu-qcow2-image:24.04-lfcs-{ARCH}"
+      cpus: 2
+      memoryMB: 2048
+      diskSizeGB: 15
+      display: false
+
+bootstrap:
+  init:
+    - name: seed-repository
+      description: "Create the extension repository with the mistakes"
+      type: folder
+      source: bootstrap/
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: module-extends-catalog
+      description: "the scout module extends the catalog and adds its processor"
+      type: file
+      source: validation/validate-module-extends-catalog.sh
+      hint: "Set pluginId to 'catalog', put catalogProcessingExtensionPoint in deps and call addProcessor in init."
+    - name: module-default-export
+      description: "the scout module package exports the module as default"
+      type: file
+      source: validation/validate-module-default-export.sh
+      hint: "Export it as default: export { name as default } from the module file."
+    - name: modules-registered
+      description: "the backend adds both modules with backend.add(import(...))"
+      type: file
+      source: validation/validate-modules-registered.sh
+      hint: "Remove the // in front of the two internal backend.add lines. A commented line adds nothing."
+    - name: policy-denies-delete
+      description: "fleet-policy policy denies entity deletion for non-administrators"
+      type: file
+      source: validation/validate-policy-denies-delete.sh
+      hint: "Use isPermission(request.permission, catalogEntityDeletePermission), allow only users whose ownershipEntityRefs include group:default/starfleet-admins, and return { result: AuthorizeResult.DENY } for everyone else."
+    - name: policy-module-sets-policy
+      description: "the permission module registers the policy through policyExtensionPoint"
+      type: file
+      source: validation/validate-policy-module-sets-policy.sh
+      hint: "Call policy.setPolicy(new FleetPolicy()) in init."
+    - name: page-path-configured
+      description: "app.extensions moves page:scout-status to /fleet-status"
+      type: file
+      source: validation/validate-page-path-configured.sh
+      hint: "Under app.extensions, the entry page:scout-status needs config with path: /fleet-status."
+    - name: versions-consistent
+      description: "every package.json asks for the same version of each @backstage package"
+      type: file
+      source: validation/validate-versions-consistent.sh
+      hint: "Find the @backstage dependency that differs between the package.json files and set the same version everywhere."
+
+teardown:
+  keepCluster: false

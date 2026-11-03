@@ -203,20 +203,28 @@ The course covers **Customizing Backstage**, worth **32%** of
 **Certified Backstage Associate (CBA)**. It is part of **ATP014**.
 The official objectives are listed in `astrona.yaml` and mapped in `CURRICULUM.md`.
 
-### Reading-only scope
+### Hands-on scope
 
-The maintainer approved the lesson plan, asked for deeper teaching, and explicitly
-requested **no labs or playgrounds**. That instruction overrides shared examples
-about hands-on environments, graded labs and playground markers. Do not create
-runtime configurations, executable exercises or playground lifecycle markers.
-The course must be usable without a cluster or installed command-line tools.
+The maintainer lifted the earlier reading-only limit. The course now has
+playgrounds, graded labs, section capstones, section quizzes and a final domain
+quiz, built to the shared rules above (landing page, parts, `# Summary` page
+ending in `<!-- astrona:playground:destroy -->`, playground, module lab).
+
+Runtime: every playground and lab is a `qemu` virtual machine
+(`ghcr.io/astrona-io/ubuntu-qcow2-image:24.04-lfcs-{ARCH}`). Bootstrap scripts
+write a small Backstage-style project to `/home/candidate/backstage-app`
+(configuration, TypeScript and React source files, no `node_modules`). The
+learner edits files. Validation scripts check the files with `grep`, `awk` and
+`python3` from the standard library; nothing runs a Backstage build. Labs and
+playgrounds are built untested: only `astrona validate`, `bash -n` and YAML
+parsing have been run. Do not claim runtime verification.
 
 ### Teaching structure and depth
 
 Every section begins with its own introduction and measurable learning outcomes.
 Every module contains a landing page, developed teaching lessons and a final
 `# Summary` page. Put the summary after all its lessons and before the next
-module. This reading-only summary has no playground destruction marker.
+module. The summary ends with the playground destruction marker.
 
 Explain mechanisms, responsible components, realistic examples and the limits
 of each claim. Include worked reasoning and relevant failure cases. Avoid thin
@@ -224,19 +232,15 @@ outlines, repetitive filler and invented command output. Split broad topics when
 needed; do not force a fixed number of lessons. The shared plain-English,
 self-contained-page and Mermaid rules apply throughout.
 
-### Reusable question data
+### Quizzes
 
-Write original single-choice questions as YAML banks under section folders and
-`assessments/`. Use the versioned contract in `schemas/question-bank.schema.json`
-and teaching order in `assessments/index.yaml`. Each bank has 5–15 questions with
-stable IDs, one correct option, per-option feedback, a measurable learning
-objective and source reading paths for author traceability.
-
-Do not register YAML as a Markdown reading. A future renderer consumes the bank
-index and presents the checkpoint after its declared reading, preserving bank
-order when several share an anchor. Do not expose answer keys before submission
-in a production quiz interface. These public banks are practice material, not
-secure or official exam questions.
+Each section has `sections/section-0N0/quiz.yaml` (`status: draft`, registered
+in `astrona.yaml` as `type: quiz` with `pass_score: 70` after the capstone) and
+the course ends with `sections/final-domain-quiz.yaml`. Questions are original
+single-choice items with a stable ID, one correct option, per-option feedback,
+a measurable learning objective and source reading paths. They are practice
+material, not official exam questions. The older `assessments/` folder is kept
+only as legacy practice data and is not registered.
 
 ### Review and authoring checks
 
@@ -248,4 +252,4 @@ The ATP registration remains draft until publication is approved.
 Primary author sources are recorded in `SOURCES.md`. The objective list was
 verified on 2026-10-11. Detailed reading expansions were written on 2026-10-11.
 Validate manifest paths, summary ordering, curriculum coverage and question
-contracts. Do not claim runtime verification for a reading-only course.
+contracts. Do not claim runtime verification: labs are built untested.

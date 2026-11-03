@@ -1,0 +1,83 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Capstone: Frontend And Backend Plugins
+# Built untested: only `astrona validate`, `bash -n` and YAML parsing have been run.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-072-capstone-010
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: "qemu"
+  qemu:
+    - image:
+        type: "oci"
+        source: "ghcr.io/astrona-io/ubuntu-qcow2-image:24.04-lfcs-{ARCH}"
+      cpus: 2
+      memoryMB: 2048
+      diskSizeGB: 15
+      display: false
+
+bootstrap:
+  init:
+    - name: seed-project
+      description: "Write the beacon project: legacy frontend plugin, unfinished backend plugin and module"
+      type: file
+      source: bootstrap/01-setup.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: frontend-new-system
+      description: "plugins/beacon/src/plugin.tsx uses createFrontendPlugin and PageBlueprint with the path /beacon, and the legacy plugin.ts is gone"
+      type: file
+      source: validation/validate-frontend-new-system.sh
+      hint: "Create plugin.tsx with createFrontendPlugin({ pluginId: 'beacon', extensions: [page], routes }) and PageBlueprint.make({ params: { routeRef, path: '/beacon', loader } }). Delete the legacy plugin.ts."
+    - name: frontend-default-export
+      description: "index.ts has export { beaconPlugin as default } from './plugin'"
+      type: file
+      source: validation/validate-frontend-default-export.sh
+      hint: "The new frontend system expects the plugin as the default export of the package entry point."
+    - name: app-registers-plugin
+      description: "App.tsx imports beaconPlugin and lists it in features, and the app package depends on @internal/plugin-beacon"
+      type: file
+      source: validation/validate-app-registers-plugin.sh
+      hint: "Import the default export, add it to features: [...] and add the workspace dependency to packages/app/package.json."
+    - name: backend-extension-point
+      description: "createBackendPlugin registers beaconSourcesExtensionPoint with an addSource method that fills the sources array"
+      type: file
+      source: validation/validate-backend-extension-point.sh
+      hint: "In register, call env.registerExtensionPoint(beaconSourcesExtensionPoint, { addSource(source) { sources.push(source); } }) before registerInit."
+    - name: backend-token-from-config
+      description: "plugin.ts takes coreServices.rootConfig, reads beacon.token with getString and no longer contains the token value"
+      type: file
+      source: validation/validate-backend-token-from-config.sh
+      hint: "Add config: coreServices.rootConfig to deps and use const token = config.getString('beacon.token'). Remove the literal token."
+    - name: module-uses-extension-point
+      description: "The module has the extension point in deps and calls addSource(groundStationSource) in init"
+      type: file
+      source: validation/validate-module-uses-extension-point.sh
+      hint: "Add beacons: beaconSourcesExtensionPoint to deps, receive beacons in init and call beacons.addSource(groundStationSource)."
+    - name: backend-adds-packages
+      description: "index.ts adds the plugin and the module with backend.add(import(...)), keeps the app backend and does not add the node library"
+      type: file
+      source: validation/validate-backend-adds-packages.sh
+      hint: "Add backend.add(import('@internal/plugin-beacon-backend')); and backend.add(import('@internal/plugin-beacon-backend-module-ground-station')); before backend.start()."
+    - name: no-secret-in-source
+      description: "No plugin source contains the token value, BeaconPage.tsx sends no Authorization header and app-config.yaml keeps token: ${BEACON_TOKEN}"
+      type: file
+      source: validation/validate-no-secret-in-source.sh
+      hint: "Remove the literal token from both plugins and the Authorization header from the page. The backend reads beacon.token from the configuration."
+
+teardown:
+  keepCluster: false

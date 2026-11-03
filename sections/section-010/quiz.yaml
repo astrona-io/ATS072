@@ -1,0 +1,372 @@
+# Knowledge check for section 010. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats072-010
+course_id: ATS072
+exam_code: CBA
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-010
+  title: "Understand frontend versus backend plugins"
+questions:
+  - id: ats072-010-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Distinguish browser features from server-side plugin responsibilities"
+    source_readings:
+      - sections/section-010/module-01/course-01-what-a-frontend-plugin-package-contains.md
+    prompt: |-
+      The `scout-status` feature must call a private fleet-status system that needs an API key. Where should the code that holds the key and calls that system live?
+    options:
+      - id: a
+        text: "In the route reference, because route references are not shown to users."
+        explanation: "A route reference only stands for a page address and cannot protect a value."
+      - id: b
+        text: "In the frontend plugin, in a constant next to the page component."
+        explanation: "The browser downloads all frontend plugin code, so every user could read the key."
+      - id: c
+        text: "In a backend plugin, which reads the key from configuration and returns only the result to the page."
+        explanation: "Correct. A backend plugin runs on the server, can read secrets from configuration and exposes only the data the page needs."
+      - id: d
+        text: "In `packages/app/src/App.tsx`, because the app package is private."
+        explanation: "The app package is built into the browser bundle, so the key would still reach users."
+    correct_option: c
+    explanation: "Correct. A backend plugin runs on the server, can read secrets from configuration and exposes only the data the page needs."
+
+  - id: ats072-010-q02
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain how a routable extension is built and mounted"
+    source_readings:
+      - sections/section-010/module-01/course-01-what-a-frontend-plugin-package-contains.md
+    prompt: |-
+      Which code turns the `ScoutStatusPage` component into something the app can place on a route in the legacy system?
+    options:
+      - id: a
+        text: "`createRouteRef({ id: 'scout-status' })` alone."
+        explanation: "A route reference stands for an address but holds no component."
+      - id: b
+        text: "`backend.add(import('@internal/plugin-scout-status'))`"
+        explanation: "`backend.add` loads backend packages and has no role in the browser app."
+      - id: c
+        text: "`scoutStatusPlugin.provide(createRoutableExtension({ name, component, mountPoint: rootRouteRef }))`"
+        explanation: "Correct. `createRoutableExtension` wraps the lazily loaded component, and `provide` attaches it to the plugin."
+      - id: d
+        text: "`export default ScoutStatusPage` in the component file only."
+        explanation: "A default export does not connect the component to the plugin or a route reference."
+    correct_option: c
+    explanation: "Correct. `createRoutableExtension` wraps the lazily loaded component, and `provide` attaches it to the plugin."
+
+  - id: ats072-010-q03
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Describe how a frontend component finds its backend"
+    source_readings:
+      - sections/section-010/module-01/course-01-what-a-frontend-plugin-package-contains.md
+    prompt: |-
+      The `ScoutStatusPage` component calls `discoveryApi.getBaseUrl('scout-status')`. What does the discovery API return?
+    options:
+      - id: a
+        text: "The URL of the frontend page at `/scout-status`."
+        explanation: "Discovery resolves backend plugin addresses, not frontend routes."
+      - id: b
+        text: "The path of the plugin package in the repository."
+        explanation: "Discovery works at run time and knows nothing about repository paths."
+      - id: c
+        text: "The identity token of the signed-in user."
+        explanation: "The fetch API adds identity to requests; discovery returns only an address."
+      - id: d
+        text: "The base URL of the backend plugin whose plugin id is `scout-status`."
+        explanation: "Correct. The address is built from the backend base URL and the plugin id, for example `http://localhost:7007/api/scout-status`."
+    correct_option: d
+    explanation: "Correct. The address is built from the backend base URL and the plugin id, for example `http://localhost:7007/api/scout-status`."
+
+  - id: ats072-010-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Register a frontend plugin page in the legacy app package"
+    source_readings:
+      - sections/section-010/module-01/course-02-registering-a-plugin-in-the-app-package.md
+    prompt: |-
+      A team adds `@internal/plugin-scout-status` to `packages/app/package.json` and runs the app. Opening `/scout-status` shows the not-found page, and `App.tsx` has no mention of the plugin. What is missing?
+    options:
+      - id: a
+        text: "A backend module for the plugin."
+        explanation: "A backend module is unrelated to a missing frontend route."
+      - id: b
+        text: "An import of `ScoutStatusPage` and a `Route` for `/scout-status` inside `FlatRoutes`."
+        explanation: "Correct. In the legacy system the dependency is only the first of three steps: dependency, import and route."
+      - id: c
+        text: "A `pluginId` in `app-config.yaml`."
+        explanation: "The legacy app does not read plugin ids from the configuration file."
+      - id: d
+        text: "A new route reference with a different id."
+        explanation: "The route reference exists; the app has no route that renders the extension."
+    correct_option: b
+    explanation: "Correct. In the legacy system the dependency is only the first of three steps: dependency, import and route."
+
+  - id: ats072-010-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Diagnose a missing plugin page by finding the missing registration step"
+    source_readings:
+      - sections/section-010/module-01/course-02-registering-a-plugin-in-the-app-package.md
+    prompt: |-
+      `App.tsx` contains `{/* <Route path="/scout-status" element={<ScoutStatusPage />} /> */}` and the page is not reachable. Why?
+    options:
+      - id: a
+        text: "The plugin id must be written in upper case."
+        explanation: "Plugin ids are lower case and unrelated to the comment."
+      - id: b
+        text: "`FlatRoutes` ignores routes whose path starts with a slash."
+        explanation: "`FlatRoutes` matches normal paths such as `/catalog`."
+      - id: c
+        text: "The JSX comment is not a route, so no route renders the page."
+        explanation: "Correct. A commented-out element is never created, even though `grep` finds the text."
+      - id: d
+        text: "The route needs the `exact` property."
+        explanation: "The routes of `FlatRoutes` do not need `exact`."
+    correct_option: c
+    explanation: "Correct. A commented-out element is never created, even though `grep` finds the text."
+
+  - id: ats072-010-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Place routes correctly in the legacy app"
+    source_readings:
+      - sections/section-010/module-01/course-02-registering-a-plugin-in-the-app-package.md
+    prompt: |-
+      A developer adds a valid `<Route path="/scout-status" element={<ScoutStatusPage />} />` after the closing `</FlatRoutes>` tag. What is the most likely result?
+    options:
+      - id: a
+        text: "The route is outside `FlatRoutes`, so it may never match and the page stays unreachable."
+        explanation: "Correct. `FlatRoutes` picks the matching route among its children."
+      - id: b
+        text: "The backend rejects the request with a 401."
+        explanation: "This is a frontend routing problem, not an authentication problem."
+      - id: c
+        text: "The page works, because every `Route` in the file takes part in matching."
+        explanation: "Only routes inside `FlatRoutes` are matched against the address."
+      - id: d
+        text: "The build fails because `Route` is not imported."
+        explanation: "`Route` is imported in the file; the problem is the position."
+    correct_option: a
+    explanation: "Correct. `FlatRoutes` picks the matching route among its children."
+
+  - id: ats072-010-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Recognize the new frontend system API"
+    source_readings:
+      - sections/section-010/module-01/course-03-the-new-frontend-system.md
+    prompt: |-
+      Which plugin file is written for the new frontend system?
+    options:
+      - id: a
+        text: "`createFrontendPlugin({ pluginId: 'beacon', extensions: [beaconPage] })` with `PageBlueprint.make`"
+        explanation: "Correct. The new system uses `createFrontendPlugin`, `pluginId` and blueprints."
+      - id: b
+        text: "`createBackendPlugin({ pluginId: 'beacon' })`"
+        explanation: "This creates a backend plugin that runs on the server."
+      - id: c
+        text: "`createApp({})` from `@backstage/app-defaults`"
+        explanation: "This creates a legacy app, not a plugin."
+      - id: d
+        text: "`createPlugin({ id: 'beacon' })` with `createRoutableExtension`"
+        explanation: "These are the legacy APIs from `@backstage/core-plugin-api`."
+    correct_option: a
+    explanation: "Correct. The new system uses `createFrontendPlugin`, `pluginId` and blueprints."
+
+  - id: ats072-010-q08
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Match plugin code to the frontend system of the app"
+    source_readings:
+      - sections/section-010/module-01/course-03-the-new-frontend-system.md
+    prompt: |-
+      An app imports `createApp` from `@backstage/frontend-defaults` and passes `features: []`. A guide tells the developer to import `ScoutStatusPage` and add a `Route` inside `FlatRoutes`. What should the developer do?
+    options:
+      - id: a
+        text: "Follow the guide, because both systems accept routes in `FlatRoutes`."
+        explanation: "The new frontend system has no `FlatRoutes` in the app source."
+      - id: b
+        text: "Recognize that the guide targets the legacy system, and use a plugin made with `createFrontendPlugin` in `features` or a compatibility layer."
+        explanation: "Correct. The import in `App.tsx` decides the system, and the plugin API must match it."
+      - id: c
+        text: "Rewrite the backend plugin with `createPlugin`."
+        explanation: "The backend does not decide the frontend system."
+      - id: d
+        text: "Change the plugin id to include `-legacy`."
+        explanation: "The id does not change which API the app expects."
+    correct_option: b
+    explanation: "Correct. The import in `App.tsx` decides the system, and the plugin API must match it."
+
+  - id: ats072-010-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain how a backend plugin is loaded and reached"
+    source_readings:
+      - sections/section-010/module-02/course-01-backend-plugins-and-the-new-backend-system.md
+    prompt: |-
+      The package `@internal/plugin-scout-status-backend` is a dependency of `packages/backend` and its code is correct, but its endpoint returns 404. `index.ts` has the line `// backend.add(import('@internal/plugin-scout-status-backend'));`. What is the cause?
+    options:
+      - id: a
+        text: "The database service is missing."
+        explanation: "The router does not need a database to return a 404 for a missing mount."
+      - id: b
+        text: "The comment means the plugin is never loaded, so its router is never mounted."
+        explanation: "Correct. A package starts only when an active `backend.add(import(...))` loads it."
+      - id: c
+        text: "The `-backend` suffix must be removed from the package name."
+        explanation: "The package name is fine; the suffix is removed from the plugin id, not the package name."
+      - id: d
+        text: "The frontend must call `/status` instead of `/api/scout-status/status`."
+        explanation: "The path is built from the plugin id, and the cause here is that nothing is mounted."
+    correct_option: b
+    explanation: "Correct. A package starts only when an active `backend.add(import(...))` loads it."
+
+  - id: ats072-010-q10
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Show how the plugin id decides the URL and the discovery result"
+    source_readings:
+      - sections/section-010/module-02/course-01-backend-plugins-and-the-new-backend-system.md
+    prompt: |-
+      A backend plugin is created with `pluginId: 'scout-status-backend'`, while the frontend calls `discoveryApi.getBaseUrl('scout-status')`. What happens?
+    options:
+      - id: a
+        text: "The backend refuses to start because the id ends with `-backend`."
+        explanation: "The backend starts; the id is only wrong for this feature."
+      - id: b
+        text: "The frontend falls back to the package name."
+        explanation: "There is no fallback to the package name."
+      - id: c
+        text: "Discovery maps both ids to the same path automatically."
+        explanation: "Discovery builds the address from the id it is given."
+      - id: d
+        text: "The router is served at `/api/scout-status-backend`, so the frontend requests `/api/scout-status/...` and fails."
+        explanation: "Correct. The plugin id decides the path, and the ids on both sides must match."
+    correct_option: d
+    explanation: "Correct. The plugin id decides the path, and the ids on both sides must match."
+
+  - id: ats072-010-q11
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Use core services through dependency injection"
+    source_readings:
+      - sections/section-010/module-02/course-02-core-services-and-dependency-injection.md
+    prompt: |-
+      A backend plugin needs to read the secret `beacon.token` from the configuration. Which approach follows the backend system?
+    options:
+      - id: a
+        text: "Add `config: coreServices.rootConfig` to `deps` and call `config.getString('beacon.token')` in `init`."
+        explanation: "Correct. The plugin asks for the service, and a missing key fails at start-up with a clear error."
+      - id: b
+        text: "Create a new configuration reader with a library in the plugin."
+        explanation: "The backend already provides one service for the merged configuration."
+      - id: c
+        text: "Write the token in the frontend page and send it to the backend."
+        explanation: "Any value in the frontend is visible to every user."
+      - id: d
+        text: "Read `process.env.BEACON_TOKEN` inside `init`."
+        explanation: "This bypasses the configuration service and the app configuration files."
+    correct_option: a
+    explanation: "Correct. The plugin asks for the service, and a missing key fails at start-up with a clear error."
+
+  - id: ats072-010-q12
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain dependency injection with deps and init"
+    source_readings:
+      - sections/section-010/module-02/course-02-core-services-and-dependency-injection.md
+    prompt: |-
+      In `deps` a plugin has `log: coreServices.logger`. Which `init` signature is correct?
+    options:
+      - id: a
+        text: "`async init({ logger })`"
+        explanation: "The key is `log`, so `logger` is not provided."
+      - id: b
+        text: "`async init({ log })`"
+        explanation: "Correct. The destructured name must match the key chosen in `deps`."
+      - id: c
+        text: "`async init(coreServices.logger)`"
+        explanation: "`init` receives one object with the keys of `deps`."
+      - id: d
+        text: "`async init()` and read `coreServices.logger` inside"
+        explanation: "`coreServices` holds only references; the implementation arrives through the argument."
+    correct_option: b
+    explanation: "Correct. The destructured name must match the key chosen in `deps`."
+
+  - id: ats072-010-q13
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Explain backend modules, extension points and initialization order"
+    source_readings:
+      - sections/section-010/module-02/course-03-modules-extension-points-and-compatibility.md
+    prompt: |-
+      A plugin `beacon` registers `beaconSourcesExtensionPoint` and builds its router in `init` from a `sources` array. A module calls `addSource(...)` in its own `init`. Why does the router see the source?
+    options:
+      - id: a
+        text: "The source is read from `app-config.yaml`."
+        explanation: "The module adds it in code through the extension point."
+      - id: b
+        text: "The module runs after the plugin and replaces the router."
+        explanation: "Modules do not replace the plugin and run before it."
+      - id: c
+        text: "The backend initializes all modules of a plugin completely before the plugin `init`, so `sources` is filled first."
+        explanation: "Correct. This ordering lets the plugin use everything modules added."
+      - id: d
+        text: "The extension point copies the array to the frontend."
+        explanation: "Extension points are backend interfaces; the frontend is not involved."
+    correct_option: c
+    explanation: "Correct. This ordering lets the plugin use everything modules added."
+
+  - id: ats072-010-q14
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Keep module code to supported contracts and install packages correctly"
+    source_readings:
+      - sections/section-010/module-02/course-03-modules-extension-points-and-compatibility.md
+    prompt: |-
+      A module for the catalog imports `catalogProcessingExtensionPoint` from `@backstage/plugin-catalog-backend/src/service/...`. Which change is correct?
+    options:
+      - id: a
+        text: "Add the catalog backend `src` folder to `packages/app`."
+        explanation: "The app package is the frontend and has nothing to do with this."
+      - id: b
+        text: "Install the module in a separate backend without the catalog plugin."
+        explanation: "A module must run in the same backend as the plugin it extends."
+      - id: c
+        text: "Keep the import, because it works today."
+        explanation: "A private path is not a supported contract and can break after an update."
+      - id: d
+        text: "Import it from `@backstage/plugin-catalog-node` and install the module with `backend.add(import(...))`."
+        explanation: "Correct. The `-node` package is the public surface for extension points."
+    correct_option: d
+    explanation: "Correct. The `-node` package is the public surface for extension points."
+
+  - id: ats072-010-q15
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Identify architecture-version compatibility between guide and app"
+    source_readings:
+      - sections/section-010/module-02/course-03-modules-extension-points-and-compatibility.md
+    prompt: |-
+      A guide says: edit `packages/backend/src/plugins/catalog.ts` and add a processor to `CatalogBuilder`. The app backend uses `createBackend()` and `backend.add(import(...))` lines. What does this show?
+    options:
+      - id: a
+        text: "The guide is correct for the new backend design."
+        explanation: "The new backend does not call plugin glue files."
+      - id: b
+        text: "The frontend uses the legacy system."
+        explanation: "The frontend system is independent of the backend design."
+      - id: c
+        text: "The `catalog` plugin id must be renamed."
+        explanation: "The id is unchanged; the installation style differs."
+      - id: d
+        text: "The guide was written for the old backend design, and the new design customizes the catalog with a module."
+        explanation: "Correct. Glue code in a `plugins` folder is not called by the new backend."
+    correct_option: d
+    explanation: "Correct. Glue code in a `plugins` folder is not called by the new backend."

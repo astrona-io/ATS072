@@ -1,0 +1,76 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# React Changes In A Backstage App Capstone (LAB). Built untested: only static checks were run.
+apiVersion: astrona.io/v1
+metadata:
+  name: "ats-072-capstone-030"
+  docs:
+    question: "question.md"
+    solution: "solution.md"
+
+runtime:
+  type: "qemu"
+  qemu:
+  - image:
+      type: "oci"
+      source: "ghcr.io/astrona-io/ubuntu-qcow2-image:24.04-lfcs-{ARCH}"
+    cpus: 2
+    memoryMB: 2048
+    diskSizeGB: 15
+    display: false
+
+bootstrap:
+  init:
+    - name: "write-backstage-app"
+      description: "Write the Backstage app for React Changes In A Backstage App Capstone"
+      type: "file"
+      source: "bootstrap/01-setup.sh"
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: "apply-solution"
+      description: "Write the reference solution files"
+      type: "file"
+      source: "solution/apply.sh"
+
+validation:
+  scripts:
+    - name: "fleet-route"
+      description: "App.tsx imports FleetPage and routes /fleet inside FlatRoutes"
+      type: "file"
+      source: "validation/validate-route.sh"
+      hint: "Import FleetPage from '@internal/plugin-scout-status' and add <Route path=\"/fleet\" element={<FleetPage />} /> inside FlatRoutes."
+    - name: "fleet-sidebar"
+      description: "Root.tsx has a SidebarItem for fleet with an icon and a text"
+      type: "file"
+      source: "validation/validate-sidebar.sh"
+      hint: "Add <SidebarItem icon={ExtensionIcon} to=\"fleet\" text=\"Fleet status\" /> to the Menu group of Root.tsx."
+    - name: "catalog-through-use-api"
+      description: "FleetPanel reads the catalog through useApi(catalogApiRef) inside useAsync, without fetch"
+      type: "file"
+      source: "validation/validate-data-access.sh"
+      hint: "Use useApi(catalogApiRef) and call getEntities inside useAsync(async () => ..., [catalogApi]). Remove fetch."
+    - name: "loading-and-error"
+      description: "FleetPanel renders Progress while loading and ResponseErrorPanel on error"
+      type: "file"
+      source: "validation/validate-states.sh"
+      hint: "Destructure loading and error from useAsync and render <Progress /> and <ResponseErrorPanel error={error} /> from @backstage/core-components."
+    - name: "empty-state-and-keys"
+      description: "FleetPanel has an empty state and keys that come from the entity reference"
+      type: "file"
+      source: "validation/validate-empty-and-keys.sh"
+      hint: "Show a paragraph starting with No ships when the list is empty and set key={stringifyEntityRef(entity)} on each FleetRow."
+    - name: "optional-owner"
+      description: "FleetRow treats owner as optional and FleetPanel does not assert it"
+      type: "file"
+      source: "validation/validate-optional-owner.sh"
+      hint: "Make owner optional (owner?: string), render owner ?? 'Owner not recorded' and remove the as string assertion in FleetPanel."
+    - name: "accessible-output"
+      description: "FleetPanel has a polite live region and a labelled list"
+      type: "file"
+      source: "validation/validate-accessibility.sh"
+      hint: "Wrap the states in an element with aria-live=\"polite\" and give the <ul> an aria-label."
+
+teardown:
+  keepCluster: false

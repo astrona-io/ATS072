@@ -1,0 +1,102 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Customizing Backstage Plugins Capstone (LAB). Graded by static checks on files in /home/candidate/backstage-app. UNTESTED.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-072-capstone-020
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: "qemu"
+  qemu:
+    - image:
+        type: "oci"
+        source: "ghcr.io/astrona-io/ubuntu-qcow2-image:24.04-lfcs-{ARCH}"
+      cpus: 2
+      memoryMB: 2048
+      diskSizeGB: 15
+      display: false
+
+bootstrap:
+  init:
+    - name: seed-repository
+      description: "Create the probe-report repository with configuration and extension mistakes"
+      type: folder
+      source: bootstrap/
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: config-from-environment
+      description: "endpoint has a default and apiKey comes from the environment"
+      type: file
+      source: validation/validate-config-from-environment.sh
+      hint: "Use ${PROBE_ENDPOINT:-http://localhost:9191/report} for endpoint and ${PROBE_API_KEY} for apiKey."
+    - name: production-layering
+      description: "the production file only overrides refreshSeconds and the start script loads both files in order"
+      type: file
+      source: validation/validate-production-layering.sh
+      hint: "Remove apiKey from app-config.production.yaml. In start:production list --config for app-config.yaml first and app-config.production.yaml second."
+    - name: schema-registered
+      description: "the schema tags apiKey secret and refreshSeconds frontend, and package.json registers it"
+      type: file
+      source: validation/validate-schema-registered.sh
+      hint: "Add @visibility secret above apiKey and @visibility frontend above refreshSeconds. In package.json add configSchema and put config.d.ts in files."
+    - name: config-read-through-rootconfig
+      description: "the backend plugin and the catalog module read configuration through coreServices.rootConfig"
+      type: file
+      source: validation/validate-config-read-through-rootconfig.sh
+      hint: "Add config: coreServices.rootConfig to deps in plugin.ts and module.ts. Read keys with getString, getOptionalNumber and getOptionalString with a default, and remove process.env."
+    - name: frontend-reads-no-secret
+      description: "the card does not read the secret key"
+      type: file
+      source: validation/validate-frontend-reads-no-secret.sh
+      hint: "The browser cannot read secret keys. Remove the apiKey line from the card."
+    - name: module-extends-catalog
+      description: "the probe module extends the catalog and adds its processor"
+      type: file
+      source: validation/validate-module-extends-catalog.sh
+      hint: "Set pluginId to 'catalog', put catalogProcessingExtensionPoint in deps and call addProcessor in init."
+    - name: module-default-export
+      description: "the probe module package exports the module as default"
+      type: file
+      source: validation/validate-module-default-export.sh
+      hint: "Export it as default: export { name as default } from the module file."
+    - name: modules-registered
+      description: "the backend adds both modules with backend.add(import(...))"
+      type: file
+      source: validation/validate-modules-registered.sh
+      hint: "Remove the // in front of the two internal backend.add lines. A commented line adds nothing."
+    - name: policy-denies-delete
+      description: "outpost-policy policy denies entity deletion for non-administrators"
+      type: file
+      source: validation/validate-policy-denies-delete.sh
+      hint: "Use isPermission(request.permission, catalogEntityDeletePermission), allow only users whose ownershipEntityRefs include group:default/outpost-admins, and return { result: AuthorizeResult.DENY } for everyone else."
+    - name: policy-module-sets-policy
+      description: "the permission module registers the policy through policyExtensionPoint"
+      type: file
+      source: validation/validate-policy-module-sets-policy.sh
+      hint: "Call policy.setPolicy(new OutpostPolicy()) in init."
+    - name: page-path-configured
+      description: "app.extensions moves page:probe-report to /outpost-probes"
+      type: file
+      source: validation/validate-page-path-configured.sh
+      hint: "Under app.extensions, the entry page:probe-report needs config with path: /outpost-probes."
+    - name: versions-consistent
+      description: "every package.json asks for the same version of each @backstage package"
+      type: file
+      source: validation/validate-versions-consistent.sh
+      hint: "Find the @backstage dependency that differs between the package.json files and set the same version everywhere."
+
+teardown:
+  keepCluster: false

@@ -7,7 +7,7 @@ exam_objectives:
 
 This section covers understand frontend versus backend plugins. It develops frontend Plugins, Backend Plugins And Extension Systems through mechanisms, examples, prerequisites and failure reasoning.
 
-Read the module goals, teaching and closing summary in order. YAML checks are indexed separately and appear after designated summaries. Larger domains can include intermediate checkpoints before the final review.
+Two modules cover the topic: frontend plugins and the frontend system, then backend plugins, modules, services and extension points. Each module has a playground and a graded lab in a virtual machine with a small Backstage-style project, and the section ends with a capstone lab and a quiz. The labs are built untested.
 
 ## Learning Outcomes
 

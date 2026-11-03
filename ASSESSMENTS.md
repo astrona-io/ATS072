@@ -1,6 +1,6 @@
-# Reusable Question Banks
+# Legacy Question Banks
 
-`assessments/index.yaml` lists banks in teaching order. Each bank uses schema
+The course quizzes are now `sections/section-0N0/quiz.yaml` and `sections/final-domain-quiz.yaml`, registered in `astrona.yaml`. This folder is kept as unregistered practice data. `assessments/index.yaml` lists banks in teaching order. Each bank uses schema
 version 1 and the contract in `schemas/question-bank.schema.json`. This is an
 authoring format for future application integration, not an existing Astrona
 quiz API. No YAML question file is registered as a Markdown reading.

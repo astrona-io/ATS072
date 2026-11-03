@@ -1,0 +1,66 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Asynchronous Catalog Data Lab (LAB). Built untested: only static checks were run.
+apiVersion: astrona.io/v1
+metadata:
+  name: "ats-072-lab-030-02"
+  docs:
+    question: "question.md"
+    solution: "solution.md"
+
+runtime:
+  type: "qemu"
+  qemu:
+  - image:
+      type: "oci"
+      source: "ghcr.io/astrona-io/ubuntu-qcow2-image:24.04-lfcs-{ARCH}"
+    cpus: 2
+    memoryMB: 2048
+    diskSizeGB: 15
+    display: false
+
+bootstrap:
+  init:
+    - name: "write-backstage-app"
+      description: "Write the Backstage app for Asynchronous Catalog Data Lab"
+      type: "file"
+      source: "bootstrap/01-setup.sh"
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: "apply-solution"
+      description: "Write the reference solution files"
+      type: "file"
+      source: "solution/apply.sh"
+
+validation:
+  scripts:
+    - name: "use-api"
+      description: "The card reads the catalog through useApi(catalogApiRef) and does not call fetch"
+      type: "file"
+      source: "validation/validate-use-api.sh"
+      hint: "Import useApi from @backstage/core-plugin-api and catalogApiRef from @backstage/plugin-catalog-react, then call useApi(catalogApiRef). Remove fetch."
+    - name: "use-async"
+      description: "getEntities runs inside useAsync with the catalog API as a dependency"
+      type: "file"
+      source: "validation/validate-use-async.sh"
+      hint: "Wrap catalogApi.getEntities({ filter: ... }) in useAsync(async () => {...}, [catalogApi]) and destructure value, loading and error."
+    - name: "loading-and-error-states"
+      description: "The card renders Progress while loading and ResponseErrorPanel for an error"
+      type: "file"
+      source: "validation/validate-states.sh"
+      hint: "Import Progress and ResponseErrorPanel from @backstage/core-components, show <Progress /> while loading and <ResponseErrorPanel error={error} /> on failure."
+    - name: "empty-state-and-keys"
+      description: "An empty result has its own message and list keys come from the entity reference"
+      type: "file"
+      source: "validation/validate-empty-and-keys.sh"
+      hint: "Add a paragraph with a No outposts message when the list length is 0 and use key={stringifyEntityRef(entity)} instead of the index."
+    - name: "accessible-output"
+      description: "The output has a polite live region and a labelled list"
+      type: "file"
+      source: "validation/validate-accessibility.sh"
+      hint: "Wrap the output in an element with aria-live=\"polite\" and give the <ul> an aria-label."
+
+teardown:
+  keepCluster: false

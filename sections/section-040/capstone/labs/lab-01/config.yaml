@@ -1,0 +1,81 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Using Material UI Components Capstone (LAB). Built untested: only astrona validate, bash -n and YAML parsing were run.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-072-capstone-040
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: "qemu"
+  qemu:
+    - image:
+        type: "oci"
+        source: "ghcr.io/astrona-io/ubuntu-qcow2-image:24.04-lfcs-{ARCH}"
+      cpus: 2
+      memoryMB: 2048
+      diskSizeGB: 15
+      display: false
+
+bootstrap:
+  init:
+    - name: "seed-backstage-app"
+      description: "Writes the scout-status Backstage-style project to /home/candidate/backstage-app"
+      type: "folder"
+      source: "bootstrap/"
+
+testing:
+  init:
+    - name: apply-solution
+      description: "Apply the reference solution"
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: one-material-ui-generation
+      description: "App and plugin use only Material UI v4 and the card uses v4 imports"
+      type: file
+      source: validation/validate-one-material-ui-generation.sh
+      hint: "Search with: grep -rn \"@mui\" plugins packages. Replace each match with the @material-ui/core equivalent."
+    - name: grid-and-infocard-layout
+      description: "ScoutList uses Grid container spacing={3} with xs={12} items and each scout is an InfoCard"
+      type: file
+      source: validation/validate-grid-and-infocard-layout.sh
+      hint: "Use Grid container spacing={3}, Grid item xs={12}, no sx prop, and InfoCard from @backstage/core-components in ScoutStatusCard."
+    - name: theme-created-and-registered
+      description: "scoutTheme is created with createUnifiedTheme and registered in createApp"
+      type: file
+      source: validation/validate-theme-created-and-registered.sh
+      hint: "Create scoutTheme in scoutTheme.ts and pass themes with variant light and a UnifiedThemeProvider Provider to createApp."
+    - name: colours-from-theme-tokens
+      description: "No colour literals in the plugin and ScoutPanel uses theme.palette and theme.spacing"
+      type: file
+      source: validation/validate-colours-from-theme-tokens.sh
+      hint: "Remove hex colours from the badge and the panel and read values from the makeStyles theme argument."
+    - name: status-has-text
+      description: "Status components carry a text label"
+      type: file
+      source: validation/validate-status-has-text.sh
+      hint: "Render StatusOK, StatusWarning and StatusError with words such as \"is operational\"."
+    - name: icon-button-has-label
+      description: "Every IconButton has an aria-label"
+      type: file
+      source: validation/validate-icon-button-has-label.sh
+      hint: "Add aria-label=\"Refresh scout status\" to the IconButton."
+    - name: states-are-distinct
+      description: "Loading, error and empty states render Progress, ResponseErrorPanel and EmptyState"
+      type: file
+      source: validation/validate-states-are-distinct.sh
+      hint: "Check loading first and render <Progress />, then error with <ResponseErrorPanel error={error} />, then an empty list with <EmptyState title description missing=\"data\" />."
+    - name: refresh-calls-retry
+      description: "The refresh button calls retry from useScoutStatus"
+      type: file
+      source: validation/validate-refresh-calls-retry.sh
+      hint: "Read retry from useScoutStatus() and pass it as <ScoutToolbar onRefresh={retry} />."
+
+teardown:
+  keepCluster: false
