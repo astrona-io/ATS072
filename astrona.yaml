@@ -64,7 +64,7 @@ modules:
         difficulty: intermediate
         estimated_duration: 25m
         topic: backstage-plugins
-        task_kind: fix
+        task_kind: build
         tags: [backstage, frontend-plugin, createPlugin, createRoutableExtension, flatroutes, app-package]
         learning_goals:
           - Export a routable extension from a frontend plugin with createRoutableExtension
@@ -103,7 +103,7 @@ modules:
         difficulty: intermediate
         estimated_duration: 30m
         topic: backstage-plugins
-        task_kind: fix
+        task_kind: build
         tags: [backstage, backend-plugin, createBackendPlugin, createBackendModule, coreServices, extension-point, backend-add]
         learning_goals:
           - Give a backend plugin the right plugin id and mount its router with the httpRouter service
@@ -184,7 +184,7 @@ modules:
         difficulty: intermediate
         estimated_duration: 30m
         topic: backstage-configuration
-        task_kind: fix
+        task_kind: troubleshooting
         tags: [app-config, environment-substitution, config-d-ts, visibility, rootconfig, configapiref]
         learning_goals:
           - Read a secret and a URL from the environment with substitution
@@ -222,7 +222,7 @@ modules:
         difficulty: intermediate
         estimated_duration: 40m
         topic: backstage-extension
-        task_kind: fix
+        task_kind: troubleshooting
         tags: [backend-module, extension-point, permission-policy, app-extensions, versions-bump]
         learning_goals:
           - Write and register a catalog backend module with createBackendModule
@@ -301,7 +301,7 @@ modules:
         difficulty: intermediate
         estimated_duration: 25m
         topic: react
-        task_kind: fix
+        task_kind: troubleshooting
         tags: [react, jsx, props, usestate, useeffect, routes, sidebar]
         learning_goals:
           - Register a plugin page with a Route in FlatRoutes and a SidebarItem
@@ -336,7 +336,7 @@ modules:
         difficulty: intermediate
         estimated_duration: 30m
         topic: react
-        task_kind: fix
+        task_kind: troubleshooting
         tags: [react, useapi, catalogapiref, useasync, progress, responseerrorpanel, keys, aria]
         learning_goals:
           - Replace a fetch call in render with useApi(catalogApiRef) and useAsync
@@ -407,7 +407,7 @@ modules:
         difficulty: intermediate
         estimated_duration: 25m
         topic: backstage-ui
-        task_kind: fix
+        task_kind: troubleshooting
         tags: [backstage, material-ui, mui-v4, imports, grid, infocard]
         learning_goals:
           - Replace Material UI v5 imports with the declared v4 package in a plugin
@@ -444,7 +444,7 @@ modules:
         difficulty: intermediate
         estimated_duration: 30m
         topic: backstage-ui
-        task_kind: fix
+        task_kind: build
         tags: [backstage, theme, createUnifiedTheme, accessibility, status]
         learning_goals:
           - Create a theme with createUnifiedTheme and register it with UnifiedThemeProvider in createApp
