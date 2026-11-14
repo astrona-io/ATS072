@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://astrona.io/courses/certified-backstage-associate-cba">
+    <img src="https://astrona.io/courses/certified-backstage-associate-cba/domains/ATS072.svg" alt="ATS072: Customizing Backstage, part of the Certified Backstage Associate course on Astrona" width="100%">
+  </a>
+</p>
+
 # Customizing Backstage (ATS072)
 
 Certified Backstage Associate (CBA): Customizing Backstage, worth 32% of the official curriculum. This course belongs to ATP014.
